@@ -1,0 +1,29 @@
+## Build outputs
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+
+## Tooling and Local SDK
+.dotnet/
+.store/
+dotnet-ef.exe
+dotnet-install.ps1
+
+## Databases
+*.db
+*.db-wal
+*.db-shm
+*.db-journal
+
+## IDEs and user-specific settings
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## OS metadata
+.DS_Store
+Thumbs.db
