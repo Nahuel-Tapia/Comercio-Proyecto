@@ -1,9 +1,10 @@
 using FluentValidation;
+using MediatR;
 
 namespace ECommerce.Application.Validators.Orders;
 
 public record OrderItemDto(Guid ProductId, int Quantity);
-public record CreateOrderCommand(Guid UserId, List<OrderItemDto> Items);
+public record CreateOrderCommand(Guid UserId, List<OrderItemDto> Items) : IRequest<Guid>;
 
 public class CreateOrderValidator : AbstractValidator<CreateOrderCommand>
 {
@@ -17,7 +18,6 @@ public class CreateOrderValidator : AbstractValidator<CreateOrderCommand>
             .NotEmpty()
             .WithMessage("La orden debe tener al menos un producto.");
 
-        // Validar cada elemento de la lista con índice: Items[0].Quantity, etc.
         RuleForEach(x => x.Items).ChildRules(item =>
         {
             item.RuleFor(i => i.ProductId)
