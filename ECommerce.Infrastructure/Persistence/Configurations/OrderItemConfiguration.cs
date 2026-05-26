@@ -1,34 +1,22 @@
-using ECommerce.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using ECommerce.Domain.Entities;
 
-namespace ECommerce.Infrastructure.Persistence.Configurations
+namespace ECommerce.Infrastructure.Persistence.Configurations;
+
+public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
 {
-    public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
+    public void Configure(EntityTypeBuilder<OrderItem> builder)
     {
-        public void Configure(EntityTypeBuilder<OrderItem> builder)
-        {
-            builder.ToTable("OrderItems");
+        builder.ToTable("OrderItems");
+        builder.HasKey(i => i.Id);
+        builder.Property(i => i.Id).ValueGeneratedNever();
+        builder.Property(i => i.UnitPrice).HasColumnType("decimal(18,2)").IsRequired();
+        builder.Property(i => i.Quantity).IsRequired();
+        builder.Property(i => i.ProductId).IsRequired();
+        builder.Property(i => i.OrderId).IsRequired();
 
-            builder.HasKey(oi => oi.Id);
-            builder.Property(oi => oi.Id)
-                .ValueGeneratedNever();
-
-            builder.Property(oi => oi.UnitPrice)
-                .HasColumnType("decimal(18,2)")
-                .IsRequired();
-
-            builder.Property(oi => oi.TotalPrice)
-                .HasColumnType("decimal(18,2)")
-                .IsRequired();
-
-            builder.Property(oi => oi.Quantity)
-                .IsRequired();
-
-            builder.HasOne(oi => oi.Product)
-                .WithMany()
-                .HasForeignKey(oi => oi.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
-        }
+        // Subtotal es calculado en C# — NO se persiste en BD
+        builder.Ignore(i => i.Subtotal);
     }
 }

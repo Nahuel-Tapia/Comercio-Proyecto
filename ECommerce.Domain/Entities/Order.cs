@@ -1,15 +1,34 @@
-using System;
-using System.Collections.Generic;
+namespace ECommerce.Domain.Entities;
 
-namespace ECommerce.Domain.Entities
+public enum OrderStatus { Pending, Confirmed, Shipped, Delivered, Cancelled }
+
+public class Order
 {
-    public class Order
+    public Guid Id { get; private set; }
+    public Guid UserId { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    public OrderStatus Status { get; private set; }
+    public decimal Total { get; private set; }
+
+    private readonly List<OrderItem> _items = new();
+    public IReadOnlyCollection<OrderItem> Items => _items.AsReadOnly();
+
+    private Order() { }
+
+    public Order(Guid userId)
     {
-        public Guid Id { get; set; }
-        public Guid UserId { get; set; }
-        public User User { get; set; } = null!;
-        public DateTime OrderDate { get; set; }
-        public decimal Total { get; set; }
-        public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
+        Id        = Guid.NewGuid();
+        UserId    = userId;
+        CreatedAt = DateTime.UtcNow;
+        Status    = OrderStatus.Pending;
+        Total     = 0;
+    }
+
+    public void AddItem(Product product, int quantity)
+    {
+        product.Reserve(quantity); // valida stock y lo descuenta
+        var item = new OrderItem(Id, product.Id, product.Price, quantity);
+        _items.Add(item);
+        Total += item.Subtotal;
     }
 }

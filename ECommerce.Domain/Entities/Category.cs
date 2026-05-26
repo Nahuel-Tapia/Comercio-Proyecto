@@ -1,12 +1,16 @@
-using System;
-using System.Collections.Generic;
+namespace ECommerce.Domain.Entities;
 
-namespace ECommerce.Domain.Entities
+public class Category
 {
-    public class Category
+    public Guid Id { get; private set; }
+    public string Name { get; private set; } = string.Empty;
+    public ICollection<Product> Products { get; private set; } = new List<Product>();
+
+    private Category() { }
+
+    public Category(string name)
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public ICollection<Product> Products { get; set; } = new List<Product>();
+        Id   = Guid.NewGuid();
+        Name = name;
     }
 }

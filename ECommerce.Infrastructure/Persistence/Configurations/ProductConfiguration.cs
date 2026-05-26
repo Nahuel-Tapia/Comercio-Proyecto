@@ -1,31 +1,36 @@
-using ECommerce.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using ECommerce.Domain.Entities;
 
-namespace ECommerce.Infrastructure.Persistence.Configurations
+namespace ECommerce.Infrastructure.Persistence.Configurations;
+
+public class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
-    public class ProductConfiguration : IEntityTypeConfiguration<Product>
+    public void Configure(EntityTypeBuilder<Product> builder)
     {
-        public void Configure(EntityTypeBuilder<Product> builder)
-        {
-            builder.ToTable("Products");
+        builder.ToTable("Products");
+        builder.HasKey(p => p.Id);
+        builder.Property(p => p.Id).ValueGeneratedNever(); // Guid generado en Domain
 
-            builder.HasKey(p => p.Id);
-            builder.Property(p => p.Id)
-                .ValueGeneratedNever();
+        builder.Property(p => p.Name)
+               .IsRequired()
+               .HasMaxLength(200);
 
-            builder.Property(p => p.Name)
-                .IsRequired()
-                .HasMaxLength(150);
+        builder.Property(p => p.Description)
+               .HasMaxLength(2000);
 
-            builder.Property(p => p.Price)
-                .HasColumnType("decimal(18,2)")
-                .IsRequired();
+        builder.Property(p => p.Price)
+               .IsRequired()
+               .HasColumnType("decimal(18,2)");
 
-            builder.HasOne(p => p.Category)
-                .WithMany(c => c.Products)
-                .HasForeignKey(p => p.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
-        }
+        builder.Property(p => p.Stock)
+               .IsRequired()
+               .HasDefaultValue(0);
+
+        builder.Property(p => p.CategoryId).IsRequired();
+        builder.Property(p => p.CreatedAt).IsRequired();
+
+        // Índice para búsquedas rápidas por nombre
+        builder.HasIndex(p => p.Name);
     }
 }

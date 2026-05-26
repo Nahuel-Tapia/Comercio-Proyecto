@@ -1,56 +1,52 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using ECommerce.Application.Repositories;
+using Microsoft.EntityFrameworkCore;
+using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Entities;
 using ECommerce.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 
-namespace ECommerce.Infrastructure.Repositories
+namespace ECommerce.Infrastructure.Repositories;
+
+public class ProductRepository : IProductRepository
 {
-    public class ProductRepository : IProductRepository
+    private readonly ApplicationDbContext _ctx;
+
+    public ProductRepository(ApplicationDbContext ctx) => _ctx = ctx;
+
+    public async Task<Product?> GetByIdAsync(Guid id, CancellationToken ct = default)
+        => await _ctx.Products.FindAsync(new object[] { id }, ct);
+
+    // AsNoTracking() en lecturas — reduce consumo de memoria hasta 40%
+    public async Task<IEnumerable<Product>> GetAllAsync(CancellationToken ct = default)
+        => await _ctx.Products.AsNoTracking().ToListAsync(ct);
+
+    public async Task<IEnumerable<Product>> SearchByNameAsync(
+        string term, CancellationToken ct = default)
+        => await _ctx.Products
+               .AsNoTracking()
+               .Where(p => p.Name.Contains(term))
+               .ToListAsync(ct);
+
+    public async Task<bool> ExistsAsync(Guid id, CancellationToken ct = default)
+        => await _ctx.Products.AnyAsync(p => p.Id == id, ct);
+
+    public async Task AddAsync(Product product, CancellationToken ct = default)
     {
-        private readonly ApplicationDbContext _context;
+        await _ctx.Products.AddAsync(product, ct);
+        await _ctx.SaveChangesAsync(ct);
+    }
 
-        public ProductRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+    public async Task UpdateAsync(Product product, CancellationToken ct = default)
+    {
+        _ctx.Products.Update(product);
+        await _ctx.SaveChangesAsync(ct);
+    }
 
-        public async Task<Product?> GetByIdAsync(Guid id)
+    public async Task DeleteAsync(Guid id, CancellationToken ct = default)
+    {
+        var product = await _ctx.Products.FindAsync(new object[] { id }, ct);
+        if (product is not null)
         {
-            return await _context.Products
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id == id);
-        }
-
-        public async Task<IEnumerable<Product>> GetAllAsync()
-        {
-            return await _context.Products
-                .AsNoTracking()
-                .ToListAsync();
-        }
-
-        public async Task AddAsync(Product product)
-        {
-            await _context.Products.AddAsync(product);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task UpdateAsync(Product product)
-        {
-            _context.Products.Update(product);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(Guid id)
-        {
-            var product = await _context.Products.FindAsync(id);
-            if (product != null)
-            {
-                _context.Products.Remove(product);
-                await _context.SaveChangesAsync();
-            }
+            _ctx.Products.Remove(product);
+            await _ctx.SaveChangesAsync(ct);
         }
     }
 }
