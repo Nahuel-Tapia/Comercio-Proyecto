@@ -1,5 +1,5 @@
 using FluentValidation;
-using ECommerce.Application.UseCases.Products;
+using ECommerce.Application.UseCases.Products.Commands;
 
 namespace ECommerce.Application.Validators.Products;
 

@@ -1,5 +1,6 @@
 using FluentValidation;
-using ECommerce.Application.UseCases.Orders;
+using ECommerce.Application.UseCases.Orders.Commands;
+using ECommerce.Application.UseCases.Orders.Dtos;
 
 namespace ECommerce.Application.Validators.Orders;
 

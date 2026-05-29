@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
-using ECommerce.Application.Validators.Orders;
 using ECommerce.Application.UseCases.Orders;
+using ECommerce.Application.UseCases.Orders.Commands;
+using ECommerce.Application.UseCases.Orders.Dtos;
 
 namespace ECommerce.Api.Controllers;
 
@@ -17,10 +18,10 @@ public class OrdersController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> Create(
-        [FromBody] CreateOrderCommand command,
+        [FromBody] CreateOrderRequest request,
         CancellationToken ct)
     {
-        // MediatR ejecuta la validación y luego el Handler
+        var command = OrderMapper.ToCommand(request);
         var orderId = await _sender.Send(command, ct);
 
         return Created($"/api/orders/{orderId}", new { id = orderId });

@@ -2,7 +2,7 @@ using MediatR;
 using ECommerce.Domain.Entities;
 using ECommerce.Application.Interfaces;
 
-namespace ECommerce.Application.UseCases.Products;
+namespace ECommerce.Application.UseCases.Products.Queries;
 
 public record GetAllProductsQuery() : IRequest<IEnumerable<Product>>;
 

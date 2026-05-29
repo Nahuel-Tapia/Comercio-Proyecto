@@ -1,7 +1,7 @@
 using FluentAssertions;
 using FluentValidation.TestHelper;
 using ECommerce.Application.Validators.Products;
-using ECommerce.Application.UseCases.Products;
+using ECommerce.Application.UseCases.Products.Commands;
 
 namespace ECommerce.Tests.Application;
 

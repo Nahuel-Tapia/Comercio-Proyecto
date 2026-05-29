@@ -1,10 +1,11 @@
 using MediatR;
 using ECommerce.Application.Interfaces;
 using ECommerce.Application.Validators.Orders;
+using ECommerce.Application.UseCases.Orders.Dtos;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Exceptions;
 
-namespace ECommerce.Application.UseCases.Orders;
+namespace ECommerce.Application.UseCases.Orders.Commands;
 
 public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Guid>
 {

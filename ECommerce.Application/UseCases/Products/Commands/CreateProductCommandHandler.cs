@@ -3,7 +3,7 @@ using ECommerce.Application.Interfaces;
 using ECommerce.Application.Validators.Products;
 using ECommerce.Domain.Entities;
 
-namespace ECommerce.Application.UseCases.Products;
+namespace ECommerce.Application.UseCases.Products.Commands;
 
 public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Guid>
 {

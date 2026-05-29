@@ -3,7 +3,7 @@ using ECommerce.Domain.Entities;
 using ECommerce.Domain.Exceptions;
 using ECommerce.Application.Interfaces;
 
-namespace ECommerce.Application.UseCases.Products;
+namespace ECommerce.Application.UseCases.Products.Queries;
 
 public record GetProductByIdQuery(Guid Id) : IRequest<Product>;
 
