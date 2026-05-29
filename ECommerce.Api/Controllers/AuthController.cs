@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ECommerce.Application.UseCases.Auth;
+using ECommerce.Api.DTOs;
 
 namespace ECommerce.Api.Controllers;
 
@@ -24,4 +25,3 @@ public class AuthController : ControllerBase
     }
 }
 
-public record LoginRequest(string Email, string Password);
