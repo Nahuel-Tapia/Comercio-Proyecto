@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace ECommerce.Infrastructure.Persistence.Migrations
+namespace ECommerce.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddValueObjects : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -108,6 +108,15 @@ namespace ECommerce.Infrastructure.Persistence.Migrations
                     { new Guid("a1b2c3d4-0000-0000-0000-000000000001"), "Electrónica" },
                     { new Guid("a1b2c3d4-0000-0000-0000-000000000002"), "Ropa" },
                     { new Guid("a1b2c3d4-0000-0000-0000-000000000003"), "Hogar" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "CreatedAt", "Email", "Name", "PasswordHash", "Role" },
+                values: new object[,]
+                {
+                    { new Guid("b1c2d3e4-0000-0000-0000-000000000001"), new DateTime(2026, 5, 29, 0, 0, 0, 0, DateTimeKind.Utc), "admin@ecommerce.com", "Admin User", "$2a$11$SbkAOhrzuLyR4WHKTkiZoO3kOcgtPJ/zVwWpAc79yFVNzWfRJyLYW", "Admin" },
+                    { new Guid("b1c2d3e4-0000-0000-0000-000000000002"), new DateTime(2026, 5, 29, 0, 0, 0, 0, DateTimeKind.Utc), "user@ecommerce.com", "Normal User", "$2a$11$i0z5n20XCPwKclVG21/zQutZ/eMz9o8hfhA2hrFah5fim0moYJ3iK", "User" }
                 });
 
             migrationBuilder.CreateIndex(

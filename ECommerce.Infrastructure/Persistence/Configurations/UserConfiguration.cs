@@ -25,5 +25,27 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         // Email único en la tabla
         builder.HasIndex(u => u.Email).IsUnique();
+
+        // Seed de usuarios de prueba
+        builder.HasData(
+            new
+            {
+                Id = new Guid("b1c2d3e4-0000-0000-0000-000000000001"),
+                Email = new Email("admin@ecommerce.com"),
+                Name = "Admin User",
+                PasswordHash = "$2a$11$SbkAOhrzuLyR4WHKTkiZoO3kOcgtPJ/zVwWpAc79yFVNzWfRJyLYW",
+                Role = "Admin",
+                CreatedAt = new DateTime(2026, 5, 29, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new
+            {
+                Id = new Guid("b1c2d3e4-0000-0000-0000-000000000002"),
+                Email = new Email("user@ecommerce.com"),
+                Name = "Normal User",
+                PasswordHash = "$2a$11$i0z5n20XCPwKclVG21/zQutZ/eMz9o8hfhA2hrFah5fim0moYJ3iK",
+                Role = "User",
+                CreatedAt = new DateTime(2026, 5, 29, 0, 0, 0, DateTimeKind.Utc)
+            }
+        );
     }
 }

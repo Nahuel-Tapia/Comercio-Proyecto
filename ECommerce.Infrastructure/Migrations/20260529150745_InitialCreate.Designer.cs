@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ECommerce.Infrastructure.Persistence.Migrations
+namespace ECommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260529115904_AddValueObjects")]
-    partial class AddValueObjects
+    [Migration("20260529150745_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -171,6 +171,26 @@ namespace ECommerce.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("b1c2d3e4-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 5, 29, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "admin@ecommerce.com",
+                            Name = "Admin User",
+                            PasswordHash = "$2a$11$SbkAOhrzuLyR4WHKTkiZoO3kOcgtPJ/zVwWpAc79yFVNzWfRJyLYW",
+                            Role = "Admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("b1c2d3e4-0000-0000-0000-000000000002"),
+                            CreatedAt = new DateTime(2026, 5, 29, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "user@ecommerce.com",
+                            Name = "Normal User",
+                            PasswordHash = "$2a$11$i0z5n20XCPwKclVG21/zQutZ/eMz9o8hfhA2hrFah5fim0moYJ3iK",
+                            Role = "User"
+                        });
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.OrderItem", b =>
