@@ -1,12 +1,7 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
-using ECommerce.Application.Interfaces;
 using ECommerce.Application.UseCases.Products;
-using ECommerce.Application.Validators.Products;
-using ECommerce.Domain.Exceptions;
-using ECommerce.Domain.Entities;
 
 namespace ECommerce.Api.Controllers;
 
@@ -14,39 +9,25 @@ namespace ECommerce.Api.Controllers;
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase
 {
-    private readonly IProductRepository _repo;
     private readonly ISender _sender;
 
-    public ProductsController(IProductRepository repo, ISender sender)
-    {
-        _repo   = repo;
-        _sender = sender;
-    }
+    // Un solo constructor, un solo parámetro
+    public ProductsController(ISender sender) => _sender = sender;
 
     [HttpGet]
     public async Task<IActionResult> GetAll(CancellationToken ct)
-        => Ok(await _repo.GetAllAsync(ct));
+        => Ok(await _sender.Send(new GetAllProductsQuery(), ct));
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
-    {
-        var product = await _repo.GetByIdAsync(id, ct);
-        if (product is null)
-            throw new NotFoundException(nameof(Product), id);
-
-        return Ok(product);
-    }
+        => Ok(await _sender.Send(new GetProductByIdQuery(id), ct));
 
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> Create(
-        [FromBody] CreateProductCommand command,
-        CancellationToken ct)
+        [FromBody] CreateProductCommand command, CancellationToken ct)
     {
-        // MediatR ejecutará ValidationBehavior automáticamente
         var productId = await _sender.Send(command, ct);
-
-        // Devolver un 201 Created apontando al endpoint GetById
         return CreatedAtAction(nameof(GetById), new { id = productId }, new { id = productId });
     }
 
@@ -54,10 +35,7 @@ public class ProductsController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
     {
-        if (!await _repo.ExistsAsync(id, ct))
-            throw new NotFoundException(nameof(Product), id);
-
-        await _repo.DeleteAsync(id, ct);
+        await _sender.Send(new DeleteProductCommand(id), ct);
         return NoContent();
     }
 }
