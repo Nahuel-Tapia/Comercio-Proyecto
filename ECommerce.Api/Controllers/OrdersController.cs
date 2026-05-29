@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using ECommerce.Application.Validators.Orders;
+using ECommerce.Application.UseCases.Orders;
 
 namespace ECommerce.Api.Controllers;
 

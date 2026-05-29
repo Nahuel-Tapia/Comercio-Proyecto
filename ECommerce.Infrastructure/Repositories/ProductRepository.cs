@@ -22,7 +22,7 @@ public class ProductRepository : IProductRepository
         string term, CancellationToken ct = default)
         => await _ctx.Products
                .AsNoTracking()
-               .Where(p => p.Name.Contains(term))
+               .Where(p => p.Name.Value.Contains(term))
                .ToListAsync(ct);
 
     public async Task<bool> ExistsAsync(Guid id, CancellationToken ct = default)

@@ -1,10 +1,7 @@
 using FluentValidation;
-using MediatR;
+using ECommerce.Application.UseCases.Orders;
 
 namespace ECommerce.Application.Validators.Orders;
-
-public record OrderItemDto(Guid ProductId, int Quantity);
-public record CreateOrderCommand(Guid UserId, List<OrderItemDto> Items) : IRequest<Guid>;
 
 public class CreateOrderValidator : AbstractValidator<CreateOrderCommand>
 {

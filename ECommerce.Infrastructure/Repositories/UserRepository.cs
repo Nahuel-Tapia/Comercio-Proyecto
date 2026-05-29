@@ -15,9 +15,19 @@ public class UserRepository : IUserRepository
         => await _ctx.Users.FindAsync(new object[] { id }, ct);
 
     public async Task<User?> GetByEmailAsync(string email, CancellationToken ct = default)
-        => await _ctx.Users
-               .AsNoTracking()
-               .FirstOrDefaultAsync(u => u.Email == email, ct);
+    {
+        try
+        {
+            var emailVo = new ECommerce.Domain.ValueObjects.Email(email);
+            return await _ctx.Users
+                   .AsNoTracking()
+                   .FirstOrDefaultAsync(u => u.Email == emailVo, ct);
+        }
+        catch (ECommerce.Domain.Exceptions.DomainRuleException)
+        {
+            return null;
+        }
+    }
 
     public async Task AddAsync(User user, CancellationToken ct = default)
     {

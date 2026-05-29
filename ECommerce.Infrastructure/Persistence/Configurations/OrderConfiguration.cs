@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ECommerce.Domain.Entities;
+using ECommerce.Domain.ValueObjects;
 
 namespace ECommerce.Infrastructure.Persistence.Configurations;
 
@@ -14,6 +15,9 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(o => o.UserId).IsRequired();
         builder.Property(o => o.CreatedAt).IsRequired();
         builder.Property(o => o.Total)
+               .HasConversion(
+                   money => money.Amount,
+                   value => new Money(value, "ARS"))
                .IsRequired()
                .HasColumnType("decimal(18,2)");
 

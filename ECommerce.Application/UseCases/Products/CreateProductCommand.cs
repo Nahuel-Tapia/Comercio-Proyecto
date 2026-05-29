@@ -1,8 +1,6 @@
 using MediatR;
-using ECommerce.Application.Interfaces;
-using ECommerce.Domain.Entities;
 
-namespace ECommerce.Application.Validators.Products;
+namespace ECommerce.Application.UseCases.Products;
 
 public record CreateProductCommand(
     string Name,

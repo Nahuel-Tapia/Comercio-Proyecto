@@ -1,3 +1,5 @@
+using ECommerce.Domain.ValueObjects;
+
 namespace ECommerce.Domain.Entities;
 
 public enum OrderStatus { Pending, Confirmed, Shipped, Delivered, Cancelled }
@@ -8,7 +10,7 @@ public class Order
     public Guid UserId { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public OrderStatus Status { get; private set; }
-    public decimal Total { get; private set; }
+    public Money Total { get; private set; } = null!;
 
     private readonly List<OrderItem> _items = new();
     public IReadOnlyCollection<OrderItem> Items => _items.AsReadOnly();
@@ -21,7 +23,7 @@ public class Order
         UserId    = userId;
         CreatedAt = DateTime.UtcNow;
         Status    = OrderStatus.Pending;
-        Total     = 0;
+        Total     = new Money(0);
     }
 
     public void AddItem(Product product, int quantity)
@@ -29,6 +31,6 @@ public class Order
         product.Reserve(quantity); // valida stock y lo descuenta
         var item = new OrderItem(Id, product.Id, product.Price, quantity);
         _items.Add(item);
-        Total += item.Subtotal;
+        Total = Total.Add(item.Subtotal);
     }
 }

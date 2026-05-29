@@ -20,7 +20,7 @@ public class JwtTokenService : ITokenService
         {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Name, user.Name),
-            new(ClaimTypes.Email, user.Email),
+            new(ClaimTypes.Email, user.Email.Value),
             new(ClaimTypes.Role, user.Role)
             // NUNCA agregar: password, tarjeta de crédito ni datos sensibles
         };

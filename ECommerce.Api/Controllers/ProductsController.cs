@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using ECommerce.Application.Interfaces;
+using ECommerce.Application.UseCases.Products;
 using ECommerce.Application.Validators.Products;
 using ECommerce.Domain.Exceptions;
 using ECommerce.Domain.Entities;
