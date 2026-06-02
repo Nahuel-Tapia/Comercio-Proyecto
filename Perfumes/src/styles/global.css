@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-light: #FAF9F6; /* Alabaster/Plaster white */
+  --color-brand-white: #FFFFFF;
+  --color-brand-dark: #111111;  /* Matte Black */
+  --color-brand-gold: #C5A880;  /* Muted Bronze / Warm Champagne */
+  --color-brand-gold-light: #F3F0E9; /* Warm Sand */
+
+  --font-serif: 'Cormorant Garamond', serif;
+  --font-sans: 'Inter', sans-serif;
+}
+
+/* Base styles to set up the luxury aesthetic */
+@layer base {
+  body {
+    @apply bg-brand-light text-brand-dark font-sans antialiased selection:bg-brand-gold/30 selection:text-brand-dark;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif tracking-tight text-brand-dark;
+  }
+}
+
+/* Utilities for smooth scrolling and minimal scrollbars */
+html {
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-brand-gold/50 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-brand-gold;
+}

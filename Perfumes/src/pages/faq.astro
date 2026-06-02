@@ -1,0 +1,38 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Preguntas frecuentes | Lé Désir Fragancias" description="Resolvemos dudas sobre duración, envíos, cambios, pedidos por WhatsApp y elección de fragancias.">
+  <div class="bg-brand-light min-h-screen pt-40 pb-32">
+    <div class="container mx-auto px-4 md:px-8 max-w-4xl">
+      <div class="text-center mb-20 max-w-xl mx-auto space-y-4">
+        <span class="text-xs uppercase tracking-[0.3em] text-brand-gold font-semibold block">ayuda</span>
+        <h1 class="font-serif text-4xl md:text-5xl text-brand-dark font-light lowercase">preguntas frecuentes</h1>
+        <p class="text-sm sm:text-base text-brand-dark/60 font-light leading-relaxed">
+          Lo esencial para comprar con seguridad, elegir mejor y coordinar tu pedido sin vueltas.
+        </p>
+      </div>
+
+      <div class="divide-y divide-brand-dark/5 border-y border-brand-dark/5">
+        {[
+          ['¿Cómo elijo un perfume si no sé qué notas me gustan?', 'Podés usar el asesor olfativo del catálogo. Respondés unas preguntas sobre ocasión, estilo e intensidad, y te mostramos las opciones más compatibles.'],
+          ['¿Cuánto duran las fragancias?', 'Depende de la piel y el clima, pero cada ficha muestra una duración estimada. Las Eau de Parfum suelen rendir entre 6 y 10 horas, y los Extrait pueden superar ese rango.'],
+          ['¿Puedo pedir asesoramiento antes de comprar?', 'Sí. Desde la página de contacto o el footer podés escribir por WhatsApp para recibir una recomendación personalizada.'],
+          ['¿Cómo se confirma la compra?', 'Agregás productos a la bolsa, completás tus datos y el pedido se envía por WhatsApp para coordinar pago, disponibilidad y entrega.'],
+          ['¿Hacen envíos?', 'El checkout permite elegir retiro o envío. La entrega final se coordina por WhatsApp según zona, disponibilidad y método de pago.'],
+          ['¿Sirven para regalar?', 'Sí. En el catálogo podés filtrar por Regalo y también comparar fragancias para elegir una opción más segura según ocasión e intensidad.'],
+        ].map(([question, answer]) => (
+          <details class="group py-6">
+            <summary class="cursor-pointer list-none flex items-center justify-between gap-6">
+              <span class="font-serif text-xl text-brand-dark">{question}</span>
+              <span class="text-brand-gold text-2xl leading-none group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-sm text-brand-dark/62 leading-relaxed font-light mt-4 max-w-2xl">
+              {answer}
+            </p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </div>
+</Layout>

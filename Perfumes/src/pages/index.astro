@@ -1,0 +1,14 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/sections/Hero';
+import FeaturedProducts from '../components/sections/FeaturedProducts';
+import { getProducts } from '../lib/db';
+
+const products = getProducts();
+---
+
+<Layout title="Lé Désir | Perfumes Exclusivos">
+	<Hero client:load />
+	
+	<FeaturedProducts products={products} client:visible />
+</Layout>

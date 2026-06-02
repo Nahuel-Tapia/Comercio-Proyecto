@@ -1,0 +1,756 @@
+import React, { useState, useEffect } from 'react';
+import type { PerfumeProduct } from '../../data/products';
+
+function ProductFormModal({ 
+  product, 
+  onClose, 
+  onSave 
+}: { 
+  product: Partial<PerfumeProduct>, 
+  onClose: () => void, 
+  onSave: (prod: Partial<PerfumeProduct>, file?: File) => void 
+}) {
+  const [formData, setFormData] = useState<Partial<PerfumeProduct>>({
+    name: product.name || '',
+    category: product.category || 'Unisex',
+    family: product.family || '',
+    image: product.image || '',
+    sizes: product.sizes?.map(s => ({
+      label: s.label,
+      price: s.price,
+      stock: s.stock !== undefined ? s.stock : (s.label.includes('Frasco') ? 10 : 100)
+    })) || [
+      { label: '5ml', price: 0, stock: 100 },
+      { label: '10ml', price: 0, stock: 100 },
+      { label: 'Frasco Original', price: 0, stock: 10 }
+    ],
+    id: product.id
+  });
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSizePriceChange = (index: number, priceStr: string) => {
+    const newSizes = [...(formData.sizes || [])];
+    newSizes[index] = { ...newSizes[index], price: parseInt(priceStr) || 0 };
+    setFormData(prev => ({ ...prev, sizes: newSizes }));
+  };
+
+  const handleSizeStockChange = (index: number, stockStr: string) => {
+    const newSizes = [...(formData.sizes || [])];
+    newSizes[index] = { ...newSizes[index], stock: parseInt(stockStr) || 0 };
+    setFormData(prev => ({ ...prev, sizes: newSizes }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-brand-dark/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-brand-white max-w-2xl w-full p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <button onClick={onClose} className="absolute top-6 right-6 text-brand-dark/50 hover:text-brand-dark text-xl">✕</button>
+        <h2 className="font-serif text-3xl text-brand-dark mb-6">{product.id ? 'Editar Fragancia' : 'Nueva Fragancia'}</h2>
+        
+        <div className="space-y-6">
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Nombre</label>
+              <input name="name" value={formData.name} onChange={handleChange} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" />
+            </div>
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Categoría</label>
+              <select name="category" value={formData.category} onChange={handleChange} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold">
+                <option value="Para Mujer">Para Mujer</option>
+                <option value="Para Hombre">Para Hombre</option>
+                <option value="Unisex">Unisex</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Familia Olfativa</label>
+              <input name="family" value={formData.family} onChange={handleChange} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" />
+            </div>
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Imagen Local</label>
+              <input type="file" accept="image/*" onChange={handleFileChange} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-1.5 text-xs text-brand-dark focus:outline-none focus:border-brand-gold file:mr-4 file:py-1 file:px-4 file:border-0 file:text-xs file:uppercase file:tracking-widest file:bg-brand-dark file:text-brand-white file:cursor-pointer hover:file:bg-brand-gold" />
+            </div>
+          </div>
+
+          <div className="pt-4 border-t border-brand-dark/10">
+            <h3 className="text-xs uppercase tracking-widest text-brand-dark/80 font-semibold mb-4">Precios y Stock de Variantes</h3>
+            <div className="space-y-4">
+              {formData.sizes?.map((size, idx) => (
+                <div key={idx} className="grid grid-cols-3 gap-4 items-end border-b border-brand-dark/5 pb-3 last:border-0 last:pb-0">
+                  <div className="text-xs font-semibold uppercase tracking-widest text-brand-dark/60">
+                    {size.label}
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-brand-dark/50 mb-1">Precio ($)</label>
+                    <input type="number" value={size.price} onChange={e => handleSizePriceChange(idx, e.target.value)} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-brand-dark/50 mb-1">Stock (uds)</label>
+                    <input type="number" value={size.stock !== undefined ? size.stock : 0} onChange={e => handleSizeStockChange(idx, e.target.value)} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="pt-8 flex justify-end gap-4">
+            <button onClick={onClose} className="px-6 py-2 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold hover:text-brand-dark">Cancelar</button>
+            <button onClick={() => onSave(formData, imageFile || undefined)} className="px-8 py-2 bg-brand-dark text-brand-white text-xs uppercase tracking-widest font-semibold hover:bg-brand-gold transition-colors">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function AdminDashboard({ initialProducts }: { initialProducts: PerfumeProduct[] }) {
+  const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'stats'>('products');
+  const [products, setProducts] = useState<PerfumeProduct[]>(initialProducts);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>(null);
+  const [isEditing, setIsEditing] = useState<Partial<PerfumeProduct> | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchProducts = async () => {
+    const res = await fetch('/api/products');
+    if (res.ok) setProducts(await res.json());
+  };
+
+  const fetchOrders = async () => {
+    const res = await fetch('/api/orders');
+    if (res.ok) setOrders(await res.json());
+  };
+
+  const fetchStats = async () => {
+    const res = await fetch('/api/stats');
+    if (res.ok) setStats(await res.json());
+  };
+
+  useEffect(() => {
+    if (activeTab === 'orders') fetchOrders();
+    if (activeTab === 'stats') fetchStats();
+  }, [activeTab]);
+
+  const handleSaveProduct = async (prod: Partial<PerfumeProduct>, file?: File) => {
+    setIsLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('productData', JSON.stringify(prod));
+      if (file) {
+        formData.append('imageFile', file);
+      }
+
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (res.ok) {
+        setIsEditing(null);
+        await fetchProducts();
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', message: 'Producto guardado con éxito' }}));
+      } else {
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error al guardar el producto' }}));
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeleteProduct = async (id: string) => {
+    if (!confirm("¿Estás seguro de que deseas eliminar este perfume permanentemente?")) return;
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/products', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      if (res.ok) {
+        await fetchProducts();
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', message: 'Producto eliminado' }}));
+      } else {
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error al eliminar el producto' }}));
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleUpdateOrderStatus = async (id: string, status: string) => {
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/orders', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status })
+      });
+      if (res.ok) {
+        await fetchOrders();
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', message: `Orden ${id} actualizada` }}));
+      } else {
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error al actualizar orden' }}));
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="bg-brand-white border border-brand-dark/5 p-8 max-w-6xl mx-auto relative">
+      {isLoading && (
+        <div className="absolute inset-0 bg-brand-white/50 backdrop-blur-sm z-40 flex items-center justify-center">
+          <span className="text-sm uppercase tracking-widest text-brand-dark font-semibold animate-pulse">Procesando...</span>
+        </div>
+      )}
+      
+      <div className="flex justify-between items-end mb-8 border-b border-brand-dark/10 pb-4">
+        <div>
+          <span className="text-xs uppercase tracking-widest text-brand-gold font-semibold block mb-2">Panel de Control</span>
+          <h1 className="font-serif text-3xl text-brand-dark">Gestión Administrativa</h1>
+        </div>
+        <div className="flex flex-wrap gap-2 md:gap-4">
+          <button 
+            onClick={() => setActiveTab('products')} 
+            className={`uppercase tracking-widest text-xs font-semibold px-4 py-2.5 md:px-6 md:py-3 transition-colors ${activeTab === 'products' ? 'bg-brand-dark text-brand-white' : 'text-brand-dark/60 hover:text-brand-dark'}`}
+          >
+            Catálogo
+          </button>
+          <button 
+            onClick={() => setActiveTab('orders')} 
+            className={`uppercase tracking-widest text-xs font-semibold px-4 py-2.5 md:px-6 md:py-3 transition-colors ${activeTab === 'orders' ? 'bg-brand-dark text-brand-white' : 'text-brand-dark/60 hover:text-brand-dark'}`}
+          >
+            Órdenes
+          </button>
+          <button 
+            onClick={() => setActiveTab('stats')} 
+            className={`uppercase tracking-widest text-xs font-semibold px-4 py-2.5 md:px-6 md:py-3 transition-colors ${activeTab === 'stats' ? 'bg-brand-dark text-brand-white' : 'text-brand-dark/60 hover:text-brand-dark'}`}
+          >
+            Estadísticas
+          </button>
+        </div>
+      </div>
+
+      {activeTab === 'products' && (
+        <>
+          <div className="flex justify-end mb-6">
+            <button onClick={() => setIsEditing({})} className="uppercase tracking-widest text-xs font-semibold bg-brand-dark text-brand-white px-6 py-3 hover:bg-brand-gold transition-colors">
+              + Nuevo Perfume
+            </button>
+          </div>
+          {/* Vista de Tabla (Desktop) */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-brand-dark/10 bg-brand-light">
+                  <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Producto</th>
+                  <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Familia</th>
+                  <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold text-right">Variantes</th>
+                  <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-brand-dark/5">
+                {products.map((product) => (
+                  <tr key={product.id} className="hover:bg-brand-light/50 transition-colors">
+                    <td className="py-4 px-4">
+                      <div className="flex items-center gap-4">
+                        <img src={product.image} alt={product.name} className="w-10 h-10 object-cover bg-brand-gold-light" />
+                        <div>
+                          <p className="font-serif text-lg text-brand-dark">{product.name}</p>
+                          <p className="text-[10px] uppercase tracking-widest text-brand-dark/40">{product.category}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-4 px-4 text-sm text-brand-dark/70 font-light">{product.family}</td>
+                    <td className="py-4 px-4 text-right">
+                      <div className="flex flex-col items-end gap-1">
+                        {product.sizes.map((size) => (
+                          <span key={size.label} className="text-xs text-brand-dark/60 font-medium">
+                            {size.label}: <span className="text-brand-dark">${size.price.toLocaleString('es-AR')}</span>
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="py-4 px-4 text-right">
+                      <button onClick={() => setIsEditing(product)} className="text-xs uppercase tracking-widest text-brand-gold font-semibold hover:text-brand-dark transition-colors mr-4">Editar</button>
+                      <button onClick={() => handleDeleteProduct(product.id)} className="text-xs uppercase tracking-widest text-red-400 font-semibold hover:text-red-600 transition-colors">Borrar</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {/* Vista de Tarjetas (Mobile) */}
+          <div className="md:hidden space-y-4">
+            {products.map((product) => (
+              <div key={product.id} className="bg-brand-light/30 border border-brand-dark/10 p-4">
+                <div className="flex items-start gap-4 mb-4">
+                  <img src={product.image} alt={product.name} className="w-16 h-16 object-cover bg-brand-gold-light" />
+                  <div>
+                    <p className="font-serif text-xl text-brand-dark leading-tight">{product.name}</p>
+                    <p className="text-[10px] uppercase tracking-widest text-brand-dark/50 mt-1">{product.category} • {product.family}</p>
+                  </div>
+                </div>
+                <div className="border-t border-brand-dark/5 pt-3 mb-4">
+                  <p className="text-[10px] uppercase tracking-widest text-brand-dark/60 mb-2 font-semibold">Variantes</p>
+                  <div className="flex flex-col gap-1">
+                    {product.sizes.map((size) => (
+                      <div key={size.label} className="flex justify-between text-xs">
+                        <span className="text-brand-dark/70">{size.label}</span>
+                        <span className="font-semibold text-brand-dark">${size.price.toLocaleString('es-AR')}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex gap-4 pt-3 border-t border-brand-dark/5">
+                  <button onClick={() => setIsEditing(product)} className="flex-1 py-2 text-xs uppercase tracking-widest text-brand-dark font-semibold bg-brand-gold-light hover:bg-brand-gold transition-colors">Editar</button>
+                  <button onClick={() => handleDeleteProduct(product.id)} className="flex-1 py-2 text-xs uppercase tracking-widest text-red-600 font-semibold border border-red-200 hover:bg-red-50 transition-colors">Borrar</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {activeTab === 'orders' && (
+        <div>
+          {orders.length === 0 ? (
+            <p className="text-center py-12 text-brand-dark/50">No hay órdenes registradas aún.</p>
+          ) : (
+            <>
+              {/* Vista de Tabla (Desktop) */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-brand-dark/10 bg-brand-light">
+                      <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">ID</th>
+                      <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Cliente</th>
+                      <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Detalles</th>
+                      <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Monto</th>
+                      <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-brand-dark/5">
+                    {orders.map((order) => (
+                      <tr key={order.id} className="hover:bg-brand-light/50 transition-colors">
+                        <td className="py-4 px-4 font-mono text-sm">{order.id}</td>
+                        <td className="py-4 px-4">
+                          <p className="font-serif text-lg text-brand-dark">{order.client_name}</p>
+                          <p className="text-[10px] text-brand-dark/60">{order.phone}</p>
+                        </td>
+                        <td className="py-4 px-4 text-sm text-brand-dark/70 font-light">
+                          <p className="mb-1"><span className="font-semibold uppercase text-[10px] tracking-widest">Entrega:</span> {order.method}</p>
+                          <ul className="text-xs list-disc list-inside">
+                            {order.items?.map((item: any, i: number) => (
+                              <li key={i}>{item.quantity}x {item.name}</li>
+                            ))}
+                          </ul>
+                        </td>
+                        <td className="py-4 px-4 font-medium text-brand-dark">${order.total.toLocaleString('es-AR')}</td>
+                        <td className="py-4 px-4">
+                          <select 
+                            value={order.status} 
+                            onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
+                            className={`text-xs uppercase tracking-widest font-semibold p-2 border focus:outline-none ${order.status === 'Completado' ? 'bg-green-50 text-green-700 border-green-200' : order.status === 'Cancelado' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-brand-gold-light text-brand-dark border-brand-dark/10'}`}
+                          >
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Completado">Completado</option>
+                            <option value="Cancelado">Cancelado</option>
+                          </select>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              
+              {/* Vista de Tarjetas (Mobile) */}
+              <div className="md:hidden space-y-4">
+                {orders.map((order) => (
+                  <div key={order.id} className="bg-brand-light/30 border border-brand-dark/10 p-4">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <p className="font-mono text-[10px] uppercase text-brand-dark/50">#{order.id}</p>
+                        <p className="font-serif text-xl text-brand-dark">{order.client_name}</p>
+                        <p className="text-xs text-brand-dark/60 mt-1">{order.phone}</p>
+                      </div>
+                      <span className="font-semibold text-brand-dark">${order.total.toLocaleString('es-AR')}</span>
+                    </div>
+                    <div className="border-t border-brand-dark/5 pt-3 mb-3">
+                      <p className="text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Método: {order.method}</p>
+                      <ul className="text-xs text-brand-dark/70 space-y-1">
+                        {order.items?.map((item: any, i: number) => (
+                          <li key={i}>{item.quantity}x {item.name}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="pt-3 border-t border-brand-dark/5 flex items-center justify-between">
+                      <span className="text-[10px] uppercase tracking-widest font-semibold">Estado:</span>
+                      <select 
+                        value={order.status} 
+                        onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
+                        className={`text-[10px] uppercase tracking-widest font-semibold px-2 py-1 border focus:outline-none ${order.status === 'Completado' ? 'bg-green-50 text-green-700 border-green-200' : order.status === 'Cancelado' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-brand-gold-light text-brand-dark border-brand-dark/10'}`}
+                      >
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Completado">Completado</option>
+                        <option value="Cancelado">Cancelado</option>
+                      </select>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'stats' && (
+        <div className="space-y-8">
+          {!stats ? (
+            <div className="flex flex-col items-center justify-center py-20">
+              <svg className="w-8 h-8 text-brand-gold animate-spin mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              <span className="text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Cargando Estadísticas...</span>
+            </div>
+          ) : (
+            <>
+              {/* KPIs Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Ventas Totales */}
+                <div className="bg-brand-white border border-brand-dark/5 p-6 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="text-[10px] uppercase tracking-widest text-brand-dark/50 font-semibold">Ventas Totales</span>
+                    <div className="bg-brand-gold-light/45 p-2 text-brand-gold">
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <h3 className="font-serif text-2xl text-brand-dark">${stats.kpis.totalSales.toLocaleString('es-AR')}</h3>
+                  <p className="text-[10px] text-green-600 mt-1 font-semibold">Completado</p>
+                </div>
+
+                {/* Ticket Promedio */}
+                <div className="bg-brand-white border border-brand-dark/5 p-6 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="text-[10px] uppercase tracking-widest text-brand-dark/50 font-semibold">Ticket Promedio</span>
+                    <div className="bg-brand-gold-light/45 p-2 text-brand-gold">
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <h3 className="font-serif text-2xl text-brand-dark">${stats.kpis.averageOrderValue.toLocaleString('es-AR')}</h3>
+                  <p className="text-[10px] text-brand-dark/40 mt-1">Por orden completada</p>
+                </div>
+
+                {/* Conteo de Órdenes */}
+                <div className="bg-brand-white border border-brand-dark/5 p-6 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="text-[10px] uppercase tracking-widest text-brand-dark/50 font-semibold">Órdenes Realizadas</span>
+                    <div className="bg-brand-gold-light/45 p-2 text-brand-gold">
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <h3 className="font-serif text-2xl text-brand-dark">{stats.kpis.completedOrdersCount} <span className="text-sm font-sans text-brand-dark/40 font-normal">/ {stats.kpis.totalOrdersCount}</span></h3>
+                  <p className="text-[10px] text-brand-dark/40 mt-1">
+                    {stats.kpis.pendingOrdersCount} pendientes • {stats.kpis.cancelledOrdersCount} canceladas
+                  </p>
+                </div>
+
+                {/* Alertas de Almacén */}
+                <div className="bg-brand-white border border-brand-dark/5 p-6 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="text-[10px] uppercase tracking-widest text-brand-dark/50 font-semibold">Alertas de Stock</span>
+                    <div className={`p-2 ${stats.kpis.lowStockAlertsCount > 0 ? 'bg-red-50 text-red-500' : 'bg-green-50 text-green-500'}`}>
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <h3 className={`font-serif text-2xl ${stats.kpis.lowStockAlertsCount > 0 ? 'text-red-500 font-semibold' : 'text-brand-dark'}`}>
+                    {stats.kpis.lowStockAlertsCount}
+                  </h3>
+                  <p className="text-[10px] text-brand-dark/40 mt-1">Variantes con bajo inventario</p>
+                </div>
+              </div>
+
+              {/* Sales Chart Section */}
+              <SalesChart salesHistory={stats.salesHistory} />
+
+              {/* Grid 2 Columns: Top Selling vs Stock Alerts */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Top Products */}
+                <div className="bg-brand-white border border-brand-dark/5 p-6 shadow-sm">
+                  <h3 className="text-xs uppercase tracking-widest text-brand-dark/80 font-semibold mb-6 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-brand-gold"></span>
+                    Productos Más Vendidos
+                  </h3>
+                  {stats.topProducts.length === 0 ? (
+                    <p className="text-center text-sm py-12 text-brand-dark/40">No hay registros de productos vendidos aún.</p>
+                  ) : (
+                    <div className="space-y-6">
+                      {stats.topProducts.map((p: any, idx: number) => {
+                        const maxQty = Math.max(...stats.topProducts.map((tp: any) => tp.quantity), 1);
+                        const percent = (p.quantity / maxQty) * 100;
+                        return (
+                          <div key={p.id} className="flex items-center gap-4">
+                            <img src={p.image} alt={p.name} className="w-12 h-12 object-cover bg-brand-gold-light" />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex justify-between items-start mb-1">
+                                <h4 className="font-serif text-sm text-brand-dark truncate">{p.name}</h4>
+                                <span className="text-xs font-semibold text-brand-dark">{p.quantity} uds.</span>
+                              </div>
+                              <div className="w-full bg-brand-light h-1.5 rounded-none overflow-hidden">
+                                <div className="bg-brand-gold h-full transition-all duration-500" style={{ width: `${percent}%` }}></div>
+                              </div>
+                              <p className="text-[10px] text-brand-dark/40 mt-1">Total generado: ${p.total.toLocaleString('es-AR')}</p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                {/* Stock Alerts */}
+                <div className="bg-brand-white border border-brand-dark/5 p-6 shadow-sm">
+                  <h3 className="text-xs uppercase tracking-widest text-brand-dark/80 font-semibold mb-6 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-red-400"></span>
+                    Alertas de Almacén (Stock Bajo)
+                  </h3>
+                  {stats.lowStockItems.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-12 text-center">
+                      <svg className="w-8 h-8 text-green-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="text-sm font-semibold text-brand-dark/80">Todo en regla</p>
+                      <p className="text-[10px] text-brand-dark/40 mt-1">Todas las variantes tienen suficiente stock.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2">
+                      {stats.lowStockItems.map((item: any) => (
+                        <div key={item.id} className="flex items-start gap-4 p-3 border border-brand-dark/5 hover:border-brand-gold/30 transition-colors">
+                          <img src={item.image} alt={item.name} className="w-10 h-10 object-cover bg-brand-gold-light" />
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-serif text-sm text-brand-dark leading-tight">{item.name}</h4>
+                            <div className="mt-2 flex flex-wrap gap-1.5">
+                              {item.lowVariants.map((v: any, i: number) => (
+                                <span key={i} className={`text-[9px] uppercase tracking-wider font-semibold px-2 py-0.5 border ${v.stock === 0 ? 'bg-red-50 text-red-600 border-red-200' : 'bg-brand-gold-light/40 text-brand-dark border-brand-dark/10'}`}>
+                                  {v.label}: {v.stock} uds
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {isEditing && (
+        <ProductFormModal 
+          product={isEditing} 
+          onClose={() => setIsEditing(null)} 
+          onSave={handleSaveProduct} 
+        />
+      )}
+    </div>
+  );
+}
+
+function SalesChart({ salesHistory }: { salesHistory: { date: string, total: number, count: number }[] }) {
+  if (!salesHistory || salesHistory.length === 0) {
+    return (
+      <div className="bg-brand-white border border-brand-dark/5 p-8 text-center text-brand-dark/40 py-16">
+        No hay historial de ventas suficiente para generar un gráfico. Las ventas completadas aparecerán aquí.
+      </div>
+    );
+  }
+
+  // Conservar los últimos 30 días para un gráfico más limpio
+  const data = salesHistory.slice(-30);
+  const maxTotal = Math.max(...data.map(d => d.total), 1000);
+  
+  // Configuración del viewBox del SVG
+  const width = 600;
+  const height = 240;
+  const paddingLeft = 60;
+  const paddingRight = 20;
+  const paddingTop = 20;
+  const paddingBottom = 40;
+
+  const chartWidth = width - paddingLeft - paddingRight;
+  const chartHeight = height - paddingTop - paddingBottom;
+
+  // Generar coordenadas
+  const points = data.map((d, index) => {
+    const x = paddingLeft + (index / Math.max(1, data.length - 1)) * chartWidth;
+    const y = height - paddingBottom - (d.total / maxTotal) * chartHeight;
+    return { x, y, date: d.date, total: d.total, count: d.count };
+  });
+
+  // Generar rutas SVG
+  let linePath = '';
+  let areaPath = '';
+  
+  if (points.length > 0) {
+    linePath = `M ${points[0].x} ${points[0].y} ` + points.slice(1).map(p => `L ${p.x} ${p.y}`).join(' ');
+    areaPath = `${linePath} L ${points[points.length - 1].x} ${height - paddingBottom} L ${points[0].x} ${height - paddingBottom} Z`;
+  }
+
+  const [hoveredPoint, setHoveredPoint] = useState<any>(null);
+
+  // Formato para los montos en el eje Y
+  const formatYLabel = (val: number) => {
+    if (val >= 1000000) return `$${(val / 1000000).toFixed(1)}M`;
+    if (val >= 1000) return `$${(val / 1000).toFixed(0)}k`;
+    return `$${val}`;
+  };
+
+  // 4 marcas en el eje Y
+  const yTicks = [0, maxTotal * 0.25, maxTotal * 0.5, maxTotal * 0.75, maxTotal];
+
+  return (
+    <div className="bg-brand-white border border-brand-dark/5 p-6 relative">
+      <h3 className="text-xs uppercase tracking-widest text-brand-dark/80 font-semibold mb-6 flex items-center gap-2">
+        <span className="w-2 h-2 rounded-full bg-brand-gold"></span>
+        Historial de Ventas Diarias (Últimos 30 días)
+      </h3>
+      
+      <div className="relative w-full overflow-x-auto">
+        <svg viewBox={`0 0 ${width} ${height}`} className="w-full min-w-[500px] h-auto overflow-visible">
+          <defs>
+            <linearGradient id="chart-area-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#c5a880" stopOpacity="0.3" />
+              <stop offset="100%" stopColor="#c5a880" stopOpacity="0.0" />
+            </linearGradient>
+          </defs>
+
+          {/* Líneas de cuadrícula horizontal */}
+          {yTicks.map((tick, i) => {
+            const y = height - paddingBottom - (tick / maxTotal) * chartHeight;
+            return (
+              <g key={i}>
+                <line 
+                  x1={paddingLeft} 
+                  y1={y} 
+                  x2={width - paddingRight} 
+                  y2={y} 
+                  stroke="rgba(0,0,0,0.05)" 
+                  strokeDasharray="4 4" 
+                />
+                <text 
+                  x={paddingLeft - 8} 
+                  y={y + 4} 
+                  textAnchor="end" 
+                  className="text-[9px] font-sans fill-brand-dark/40 font-semibold"
+                >
+                  {formatYLabel(tick)}
+                </text>
+              </g>
+            );
+          })}
+
+          {/* Área debajo de la línea */}
+          {areaPath && (
+            <path d={areaPath} fill="url(#chart-area-grad)" />
+          )}
+
+          {/* Línea del gráfico */}
+          {linePath && (
+            <path 
+              d={linePath} 
+              fill="none" 
+              stroke="#c5a880" 
+              strokeWidth="2" 
+              strokeLinecap="round"
+              strokeLinejoin="round" 
+            />
+          )}
+
+          {/* Puntos interactivos */}
+          {points.map((p, i) => (
+            <circle
+              key={i}
+              cx={p.x}
+              cy={p.y}
+              r={hoveredPoint?.date === p.date ? 5 : 3}
+              fill={hoveredPoint?.date === p.date ? '#c5a880' : '#ffffff'}
+              stroke="#c5a880"
+              strokeWidth={hoveredPoint?.date === p.date ? 2 : 1.5}
+              className="transition-all duration-150 cursor-pointer"
+              onMouseEnter={() => setHoveredPoint(p)}
+              onMouseLeave={() => setHoveredPoint(null)}
+            />
+          ))}
+
+          {/* Eje X */}
+          <line 
+            x1={paddingLeft} 
+            y1={height - paddingBottom} 
+            x2={width - paddingRight} 
+            y2={height - paddingBottom} 
+            stroke="rgba(0,0,0,0.1)" 
+          />
+
+          {/* Etiquetas del eje X (Inicio, medio, fin) */}
+          {points.length > 0 && (
+            <>
+              <text x={points[0].x} y={height - paddingBottom + 16} textAnchor="middle" className="text-[9px] font-sans fill-brand-dark/40 uppercase tracking-wider font-semibold">
+                {new Date(points[0].date).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })}
+              </text>
+              {points.length > 2 && (
+                <text x={points[Math.floor(points.length / 2)].x} y={height - paddingBottom + 16} textAnchor="middle" className="text-[9px] font-sans fill-brand-dark/40 uppercase tracking-wider font-semibold">
+                  {new Date(points[Math.floor(points.length / 2)].date).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })}
+                </text>
+              )}
+              <text x={points[points.length - 1].x} y={height - paddingBottom + 16} textAnchor="middle" className="text-[9px] font-sans fill-brand-dark/40 uppercase tracking-wider font-semibold">
+                {new Date(points[points.length - 1].date).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })}
+              </text>
+            </>
+          )}
+        </svg>
+
+        {/* Tooltip flotante */}
+        {hoveredPoint && (
+          <div 
+            className="absolute bg-brand-dark text-brand-white p-3 shadow-xl rounded-none text-xs border border-brand-gold/20 pointer-events-none z-10 transition-all duration-100"
+            style={{
+              left: `${(hoveredPoint.x / width) * 100}%`,
+              top: `${(hoveredPoint.y / height) * 100 - 30}%`,
+              transform: 'translate(-50%, -100%)',
+            }}
+          >
+            <p className="font-semibold text-[9px] uppercase tracking-widest text-brand-gold mb-1">
+              {new Date(hoveredPoint.date).toLocaleDateString('es-AR', { weekday: 'short', day: '2-digit', month: 'short' })}
+            </p>
+            <p className="font-serif text-sm">${hoveredPoint.total.toLocaleString('es-AR')}</p>
+            <p className="text-[9px] text-brand-white/60 mt-0.5">{hoveredPoint.count} pedidos completados</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

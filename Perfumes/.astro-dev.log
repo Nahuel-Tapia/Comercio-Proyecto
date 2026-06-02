@@ -1,0 +1,732 @@
+
+> perfumes@0.0.1 dev
+> astro dev --host 127.0.0.1 --port 4321
+
+[vite] connected.
+[2m11:29:53[22m [34m[types][39m Generated [2m1ms[22m
+[2m11:29:53[22m [34m[vite][39m Re-optimizing dependencies because vite config has changed
+[42m[1m astro [22m[49m [32mv6.4.2[39m [2mready in[22m 1506 [2mms[22m
+[2m┃[22m Local    [36mhttp://127.0.0.1:4321/[39m
+[2m11:29:53[22m [32mwatching for file changes...[39m
+[2m11:31:40[22m [34m[200][39m / [2m81ms[22m
+[2m11:31:46[22m [34m[200][39m / [2m80ms[22m
+[2m11:31:47[22m [34m[200][39m /shop [2m96ms[22m
+[2m11:32:02[22m [34m[200][39m /about [2m51ms[22m
+[2m11:33:13[22m [34m[watch][39m /src/styles/global.css, /src/components/layout/Navbar.tsx
+[2m11:33:13[22m [34m[watch][39m src/components/layout/Navbar.tsx
+[vite] program reload
+[2m11:33:13[22m [33m[404][39m /src/components/layout/Navbar.tsx [2m9ms[22m
+[vite] An error happened during full reload
+Failed to load url /src/components/layout/Navbar.tsx (resolved id: C:/Users/Docente/Desktop/Perfumes/src/components/layout/Navbar.tsx) in C:/Users/Docente/Desktop/Perfumes/src/layouts/Layout.astro. Does the file exist?
+Error: Failed to load url /src/components/layout/Navbar.tsx (resolved id: C:/Users/Docente/Desktop/Perfumes/src/components/layout/Navbar.tsx) in C:/Users/Docente/Desktop/Perfumes/src/layouts/Layout.astro. Does the file exist?
+    at loadAndTransform (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/chunks/config.js:22679:33)
+    at async fetchModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/chunks/config.js:34013:15)
+    at async handleInvoke (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/chunks/config.js:25853:21)
+    at async EventEmitter.listenerForInvokeHandler (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/chunks/config.js:25908:13)
+[vite] An error happened during full reload
+Failed to load url /src/components/layout/Navbar.tsx (resolved id: C:/Users/Docente/Desktop/Perfumes/src/components/layout/Navbar.tsx) in C:/Users/Docente/Desktop/Perfumes/src/layouts/Layout.astro. Does the file exist?
+Error: Failed to load url /src/components/layout/Navbar.tsx (resolved id: C:/Users/Docente/Desktop/Perfumes/src/components/layout/Navbar.tsx) in C:/Users/Docente/Desktop/Perfumes/src/layouts/Layout.astro. Does the file exist?
+    at loadAndTransform (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/chunks/config.js:22679:33)
+    at async fetchModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/chunks/config.js:34013:15)
+    at async handleInvoke (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/chunks/config.js:25853:21)
+    at async EventEmitter.listenerForInvokeHandler (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/chunks/config.js:25908:13)
+[vite] An error happened during full reload
+Failed to load url /src/components/layout/Navbar.tsx (resolved id: C:/Users/Docente/Desktop/Perfumes/src/components/layout/Navbar.tsx) in C:/Users/Docente/Desktop/Perfumes/src/layouts/Layout.astro. Does the file exist?
+Error: Failed to load url /src/components/layout/Navbar.tsx (resolved id: C:/Users/Docente/Desktop/Perfumes/src/components/layout/Navbar.tsx) in C:/Users/Docente/Desktop/Perfumes/src/layouts/Layout.astro. Does the file exist?
+    at loadAndTransform (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/chunks/config.js:22679:33)
+    at async fetchModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/chunks/config.js:34013:15)
+    at async handleInvoke (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/chunks/config.js:25853:21)
+    at async EventEmitter.listenerForInvokeHandler (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/chunks/config.js:25908:13)
+[2m11:34:18[22m [34m[watch][39m /src/styles/global.css, /src/components/layout/Navbar.tsx
+[2m11:34:18[22m [34m[watch][39m src/components/layout/Navbar.tsx
+[2m11:34:23[22m [34m[watch][39m /src/styles/global.css, /src/components/layout/SlideCart.tsx
+[2m11:34:23[22m [34m[watch][39m src/components/layout/SlideCart.tsx
+[2m11:34:23[22m [33m[404][39m /src/components/layout/SlideCart.tsx [2m2ms[22m
+[2m11:35:30[22m [34m[watch][39m /src/styles/global.css, /src/components/layout/SlideCart.tsx
+[2m11:35:30[22m [34m[watch][39m src/components/layout/SlideCart.tsx
+[2m11:35:38[22m [34m[watch][39m /src/styles/global.css, /src/components/sections/ShopCatalog.tsx
+[2m11:35:38[22m [34m[watch][39m src/components/sections/ShopCatalog.tsx
+[2m11:37:49[22m [34m[watch][39m /src/styles/global.css, /src/components/sections/ShopCatalog.tsx
+[2m11:37:49[22m [34m[watch][39m src/components/sections/ShopCatalog.tsx
+[2m11:38:00[22m [34m[200][39m /about [2m54ms[22m
+[2m11:38:00[22m [34m[watch][39m /src/styles/global.css
+[31m[1m11:38:05[22m [ERROR][39m Could not import `/src/components/layout/Footer.astro`.
+  [1mHint:[22m
+[33m    This is often caused by a typo in the import path. Please make sure the file exists.[39m
+  [1mError reference:[22m
+    [36m[4mhttps://docs.astro.build/en/reference/errors/failed-to-load-module-ssr/[24m[39m
+  [1mStack trace:[22m
+[2m    at loadAndTransform (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/chunks/config.js:22679:33)
+    at async handleInvoke (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/chunks/config.js:25853:21)[22m
+[2m11:38:24[22m [34m[watch][39m /src/styles/global.css
+[2m11:38:24[22m [34m[200][39m / [2m123ms[22m
+[2m11:38:24[22m [34m[200][39m / [2m123ms[22m
+[2m11:38:27[22m [34m[200][39m /shop [2m115ms[22m
+[2m11:38:28[22m [34m[200][39m / [2m33ms[22m
+[2m11:38:35[22m [34m[200][39m /shop [2m50ms[22m
+[2m11:39:35[22m [34m[watch][39m /src/styles/global.css, /src/components/sections/ShopCatalog.tsx
+[2m11:39:35[22m [34m[watch][39m src/components/sections/ShopCatalog.tsx
+[vite] program reload
+[2m11:39:50[22m [34m[200][39m /shop [2m108ms[22m
+[2m11:39:57[22m [34m[200][39m /shop [2m95ms[22m
+[2m11:39:58[22m [34m[200][39m /about [2m54ms[22m
+[2m11:40:01[22m [34m[200][39m /privacy [2m74ms[22m
+[2m11:40:13[22m [34m[200][39m / [2m51ms[22m
+[2m11:40:14[22m [34m[200][39m /shop [2m76ms[22m
+[2m11:40:14[22m [34m[200][39m / [2m62ms[22m
+[2m11:40:21[22m [34m[200][39m / [2m52ms[22m
+[2m11:40:24[22m [34m[200][39m /shop [2m102ms[22m
+[2m11:40:44[22m [34m[200][39m /shop [2m58ms[22m
+[2m11:47:22[22m [34m[200][39m / [2m52ms[22m
+[2m11:47:32[22m [34m[200][39m /shop [2m104ms[22m
+[2m11:50:38[22m [34m[200][39m /shop [2m82ms[22m
+[2m11:57:16[22m [34m[200][39m /shop [2m185ms[22m
+[2m08:42:10[22m [34m[200][39m /shop [2m316ms[22m
+[2m09:56:53[22m Configuration file updated. Restarting...
+[vite] program reload
+[2m09:56:57[22m [34m[200][39m /shop [2m281ms[22m
+[vite] connected.
+[2m09:57:01[22m [34m[watch][39m /src/styles/global.css, /src/components/sections/FeaturedProducts.tsx, /src/components/layout/Navbar.tsx, /src/components/sections/ShopCatalog.tsx
+[2m09:57:01[22m [34m[watch][39m src/data/products.ts
+[vite] program reload
+[2m09:57:06[22m [34m[vite][39m Re-optimizing dependencies because lockfile has changed
+[2m09:57:06[22m [34m[vite][39m server restarted.
+TypeError: Cannot read properties of undefined (reading 'toLocaleString')
+    at eval (C:/Users/Docente/Desktop/Perfumes/src/components/sections/ShopCatalog.tsx:977:45)
+    at Array.map (<anonymous>)
+    at ShopCatalog (C:/Users/Docente/Desktop/Perfumes/src/components/sections/ShopCatalog.tsx:917:159)
+    at Object.react_stack_bottom_frame (C:\Users\Docente\Desktop\Perfumes\node_modules\react-dom\cjs\react-dom-server.node.development.js:10288:18)
+    at renderWithHooks (C:\Users\Docente\Desktop\Perfumes\node_modules\react-dom\cjs\react-dom-server.node.development.js:5298:19)
+    at renderElement (C:\Users\Docente\Desktop\Perfumes\node_modules\react-dom\cjs\react-dom-server.node.development.js:5733:23)
+    at retryNode (C:\Users\Docente\Desktop\Perfumes\node_modules\react-dom\cjs\react-dom-server.node.development.js:6664:31)
+    at performWork (C:\Users\Docente\Desktop\Perfumes\node_modules\react-dom\cjs\react-dom-server.node.development.js:7692:17)
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at C:\Users\Docente\Desktop\Perfumes\node_modules\react-dom\cjs\react-dom-server.node.development.js:8546:31
+    at node:internal/process/task_queues:150:7
+    at AsyncResource.runInAsyncScope (node:async_hooks:228:14)
+    at AsyncResource.runMicrotask (node:internal/process/task_queues:147:8)
+[2m09:58:02[22m [34m[200][39m /shop [2m161ms[22m
+[31m[1m09:58:02[22m [ERROR][39m Cannot read properties of undefined (reading 'toLocaleString')
+  [1mStack trace:[22m
+[2m    at C:\Users\Docente\Desktop\Perfumes\src\components\sections\ShopCatalog.tsx:627:45
+    at ShopCatalog (C:\Users\Docente\Desktop\Perfumes\src\components\sections\ShopCatalog.tsx:591:31)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[vite] program reload
+[vite] An error happened during full reload
+Failed to load url astro:server-app.js (resolved id: astro:server-app.js). Does the file exist?
+Error: Failed to load url astro:server-app.js (resolved id: astro:server-app.js). Does the file exist?
+    at loadAndTransform (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/chunks/config.js:22679:33)
+TypeError: Cannot read properties of undefined (reading 'toLocaleString')
+    at eval (C:/Users/Docente/Desktop/Perfumes/src/components/sections/ShopCatalog.tsx:977:45)
+    at Array.map (<anonymous>)
+    at ShopCatalog (C:/Users/Docente/Desktop/Perfumes/src/components/sections/ShopCatalog.tsx:917:159)
+    at Object.react_stack_bottom_frame (C:\Users\Docente\Desktop\Perfumes\node_modules\react-dom\cjs\react-dom-server.node.development.js:10288:18)
+    at renderWithHooks (C:\Users\Docente\Desktop\Perfumes\node_modules\react-dom\cjs\react-dom-server.node.development.js:5298:19)
+    at renderElement (C:\Users\Docente\Desktop\Perfumes\node_modules\react-dom\cjs\react-dom-server.node.development.js:5733:23)
+    at retryNode (C:\Users\Docente\Desktop\Perfumes\node_modules\react-dom\cjs\react-dom-server.node.development.js:6664:31)
+    at performWork (C:\Users\Docente\Desktop\Perfumes\node_modules\react-dom\cjs\react-dom-server.node.development.js:7692:17)
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at C:\Users\Docente\Desktop\Perfumes\node_modules\react-dom\cjs\react-dom-server.node.development.js:8546:31
+    at node:internal/process/task_queues:150:7
+    at AsyncResource.runInAsyncScope (node:async_hooks:228:14)
+    at AsyncResource.runMicrotask (node:internal/process/task_queues:147:8)
+[2m09:58:09[22m [34m[200][39m /shop [2m184ms[22m
+[31m[1m09:58:09[22m [ERROR][39m Cannot read properties of undefined (reading 'toLocaleString')
+  [1mStack trace:[22m
+[2m    at C:\Users\Docente\Desktop\Perfumes\src\components\sections\ShopCatalog.tsx:627:45
+    at ShopCatalog (C:\Users\Docente\Desktop\Perfumes\src\components\sections\ShopCatalog.tsx:591:31)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[2m09:58:39[22m [34m[watch][39m /src/styles/global.css
+[2m09:58:40[22m [34m[200][39m /shop [2m394ms[22m
+[vite] program reload
+[vite] program reload
+[2m10:00:29[22m [34m[200][39m /shop [2m450ms[22m
+[2m10:08:10[22m [34m[200][39m /shop [2m84ms[22m
+[2m10:08:13[22m [34m[200][39m / [2m231ms[22m
+[2m10:09:01[22m Configuration file updated. Restarting...
+[vite] program reload
+[2m10:09:03[22m [34m[200][39m / [2m137ms[22m
+[vite] connected.
+[2m10:09:07[22m [34m[vite][39m Re-optimizing dependencies because lockfile has changed
+[2m10:09:07[22m [34m[vite][39m server restarted.
+[2m10:09:12[22m Configuration file updated. Restarting...
+[vite] program reload
+[vite] An error happened during full reload
+Failed to load url astro:server-app.js (resolved id: astro:server-app.js). Does the file exist?
+Error: Failed to load url astro:server-app.js (resolved id: astro:server-app.js). Does the file exist?
+    at loadAndTransform (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/chunks/config.js:22679:33)
+[vite] connected.
+[vite] An error happened during full reload
+transport was disconnected, cannot call "fetchModule"
+Error: transport was disconnected, cannot call "fetchModule"
+    at reviveInvokeError (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:475:14)
+    at Object.invoke (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:549:11)
+    at async ModuleRunner.getModuleInformation (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1086:7)
+    at async request (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1103:83)
+    at async eval (C:/Users/Docente/Desktop/Perfumes/node_modules/lucide-react/dist/esm/icons/index.mjs:1907:33)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:/Users/Docente/Desktop/Perfumes/node_modules/lucide-react/dist/esm/lucide-react.mjs:5882:31)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+[31m[1m10:09:20[22m [ERROR][39m transport was disconnected, cannot call "fetchModule"
+  [1mStack trace:[22m
+[2m    at C:\Users\Docente\Desktop\Perfumes\node_modules\vite\dist\node\module-runner.js:475:14
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[2m10:09:20[22m [34m[vite][39m Re-optimizing dependencies because lockfile has changed
+[2m10:09:20[22m [34m[vite][39m server restarted.
+[2m10:09:26[22m Configuration file updated. Restarting...
+[2m10:09:26[22m [34m[@astrojs/node][39m Enabling sessions with filesystem storage
+[vite] connected.
+[2m10:09:30[22m [34m[vite][39m Re-optimizing dependencies because vite config has changed
+[2m10:09:30[22m [34m[vite][39m server restarted.
+[2m10:14:48[22m [34m[200][39m / [2m486ms[22m
+[2m10:14:48[22m [34m[200][39m / [2m490ms[22m
+[2m10:15:04[22m [34m[200][39m / [2m151ms[22m
+[2m10:15:08[22m [34m[200][39m / [2m104ms[22m
+[2m10:15:14[22m [34m[200][39m / [2m89ms[22m
+[2m10:15:15[22m [34m[200][39m / [2m83ms[22m
+[2m10:15:15[22m [34m[200][39m / [2m73ms[22m
+[2m10:18:18[22m [34m[watch][39m /src/styles/global.css
+[2m10:18:18[22m [34m[200][39m / [2m170ms[22m
+[vite] program reload
+[vite] An error happened during full reload
+Failed to load url astro:server-app.js (resolved id: astro:server-app.js). Does the file exist?
+Error: Failed to load url astro:server-app.js (resolved id: astro:server-app.js). Does the file exist?
+    at loadAndTransform (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/chunks/config.js:22679:33)
+[2m10:23:36[22m [34m[200][39m / [2m279ms[22m
+[vite] program reload
+[2m10:24:05[22m [34m[200][39m / [2m376ms[22m
+[2m10:26:52[22m [34m[watch][39m /src/styles/global.css
+[2m10:26:52[22m [34m[200][39m / [2m211ms[22m
+[2m10:27:13[22m [34m[watch][39m /src/styles/global.css, /src/components/layout/SlideCart.tsx
+[2m10:27:13[22m [34m[watch][39m src/components/layout/SlideCart.tsx
+[vite] program reload
+[vite] program reload
+[2m10:27:54[22m [34m[200][39m / [2m217ms[22m
+[vite] program reload
+[2m10:31:31[22m [34m[200][39m / [2m471ms[22m
+[vite] program reload
+[2m10:32:02[22m [34m[200][39m / [2m392ms[22m
+[vite] program reload
+[2m10:32:10[22m [34m[200][39m / [2m188ms[22m
+[2m10:32:34[22m [34m[watch][39m /src/styles/global.css, /src/components/layout/SlideCart.tsx
+[2m10:32:34[22m [34m[watch][39m src/components/layout/SlideCart.tsx
+[vite] program reload
+[2m10:32:44[22m [34m[watch][39m /src/styles/global.css, /src/components/layout/SlideCart.tsx
+[2m10:32:44[22m [34m[watch][39m src/components/layout/SlideCart.tsx
+[vite] program reload
+[2m10:33:49[22m [34m[watch][39m /src/styles/global.css
+[2m10:33:50[22m [34m[200][39m / [2m117ms[22m
+[vite] program reload
+[2m10:33:57[22m [34m[200][39m / [2m122ms[22m
+[2m10:34:03[22m [34m[watch][39m /src/styles/global.css, /src/components/sections/FeaturedProducts.tsx
+[2m10:34:03[22m [34m[watch][39m src/components/sections/FeaturedProducts.tsx
+[vite] program reload
+[vite] program reload
+[2m10:34:20[22m [34m[200][39m / [2m233ms[22m
+[vite] program reload
+[2m10:35:02[22m [34m[200][39m / [2m424ms[22m
+[2m10:40:49[22m [34m[watch][39m /src/styles/global.css
+[31m[1m10:40:50[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:109:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async ModuleRunner.import (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1014:10)
+    at async file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:682:6
+[31m[1m10:41:00[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:109:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async ModuleRunner.import (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1014:10)
+    at async file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:682:6
+[31m[1m10:41:08[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:109:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async ModuleRunner.import (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1014:10)
+    at async file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:682:6
+[31m[1m10:41:16[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:109:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async ModuleRunner.import (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1014:10)
+    at async file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:682:6
+[31m[1m10:41:32[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:109:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async ModuleRunner.import (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1014:10)
+    at async file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:682:6
+[31m[1m10:41:44[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:109:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async ModuleRunner.import (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1014:10)
+    at async file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:682:6
+[31m[1m10:41:50[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[2m10:42:03[22m [34m[watch][39m /src/styles/global.css, /src/components/layout/SlideCart.tsx
+[2m10:42:03[22m [34m[watch][39m src/components/layout/SlideCart.tsx
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:109:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+[31m[1m10:42:05[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m10:42:05[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:109:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async ModuleRunner.import (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1014:10)
+    at async file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:682:6
+[31m[1m10:50:07[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[2m10:50:29[22m [34m[watch][39m /src/styles/global.css, /src/components/sections/FeaturedProducts.tsx
+[2m10:50:29[22m [34m[watch][39m src/components/sections/FeaturedProducts.tsx
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:109:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+[31m[1m10:50:31[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m10:50:31[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:109:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async ModuleRunner.import (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1014:10)
+    at async file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:682:6
+[31m[1m10:50:39[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[2m10:50:54[22m [34m[watch][39m /src/styles/global.css, /src/components/layout/SlideCart.tsx
+[2m10:50:54[22m [34m[watch][39m src/components/layout/SlideCart.tsx
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:109:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+[31m[1m10:50:56[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m10:50:56[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[2m10:51:11[22m [34m[watch][39m /src/styles/global.css
+[31m[1m10:51:11[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[2m10:51:18[22m [34m[watch][39m /src/styles/global.css
+[31m[1m10:51:18[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[2m10:53:51[22m [34m[watch][39m /src/styles/global.css, /src/components/layout/Navbar.tsx
+[2m10:53:51[22m [34m[watch][39m src/data/products.ts
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:109:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+[31m[1m10:53:52[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m10:53:52[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[2m10:54:02[22m [34m[watch][39m /src/styles/global.css
+[31m[1m10:54:03[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:137:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async ModuleRunner.import (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1014:10)
+    at async file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:682:6
+[31m[1m10:54:29[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[2m10:54:35[22m [34m[watch][39m /src/styles/global.css, /src/components/layout/Navbar.tsx
+[2m10:54:35[22m [34m[watch][39m src/components/layout/Navbar.tsx
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:137:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+[31m[1m10:54:37[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m10:54:37[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[2m10:54:48[22m [34m[watch][39m /src/styles/global.css, /src/components/layout/SlideCart.tsx
+[2m10:54:48[22m [34m[watch][39m src/components/layout/SlideCart.tsx
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:137:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+[31m[1m10:54:51[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m10:54:51[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m10:56:09[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:137:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async ModuleRunner.import (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1014:10)
+    at async file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:682:6
+[31m[1m10:56:19[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:137:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async ModuleRunner.import (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1014:10)
+    at async file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:682:6
+[31m[1m10:56:31[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:137:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async ModuleRunner.import (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1014:10)
+    at async file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:682:6
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:137:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+[31m[1m10:56:40[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:137:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async ModuleRunner.import (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1014:10)
+    at async file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:682:6
+[31m[1m11:02:39[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:137:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async ModuleRunner.import (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1014:10)
+    at async file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:682:6
+[31m[1m11:03:02[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:137:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+[31m[1m11:03:09[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:137:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async ModuleRunner.import (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1014:10)
+    at async file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:682:6
+[31m[1m11:03:25[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[vite] program reload
+[vite] An error happened during full reload
+require is not defined
+ReferenceError: require is not defined
+    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    at eval (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:137:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async eval (C:\Users\Docente\Desktop\Perfumes\src\pages\index.astro:5:1)
+    at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:913:3)
+    at async ModuleRunner.directRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1146:59)
+    at async ModuleRunner.cachedRequest (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1053:73)
+    at async ModuleRunner.import (file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:1014:10)
+    at async file:///C:/Users/Docente/Desktop/Perfumes/node_modules/vite/dist/node/module-runner.js:682:6
+[31m[1m11:03:36[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m11:03:46[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m11:03:47[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[31m[1m11:03:52[22m [ERROR][39m require is not defined
+  [1mStack trace:[22m
+[2m    at initDb (C:\Users\Docente\Desktop\Perfumes\src\lib\db.ts:42:28)
+    [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[2m11:06:31[22m [34m[watch][39m /src/styles/global.css
+[2m11:06:31[22m [34m[200][39m / [2m185ms[22m

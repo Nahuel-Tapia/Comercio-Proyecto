@@ -1,0 +1,89 @@
+---
+import { SITE, whatsappLink } from '../../data/site';
+
+const whatsappHref = whatsappLink('Hola, quiero asesoramiento para elegir una fragancia.');
+---
+
+<footer class="bg-[#F3F0E9] border-t border-brand-dark/5 pt-20 pb-10">
+  <div class="container mx-auto px-4 md:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-16 mb-20 text-center md:text-left">
+      <div class="flex flex-col items-center md:items-start">
+        <span class="font-serif text-2xl tracking-[0.25em] uppercase text-brand-dark mb-1 font-medium">
+          {SITE.brand.toLowerCase()}
+        </span>
+        <span class="text-[11px] uppercase tracking-[0.3em] text-brand-dark/40 mb-6 font-medium">
+          Fragancias
+        </span>
+        <p class="text-brand-dark/60 text-sm max-w-xs leading-relaxed font-light">
+          Descubrí tu esencia con una colección de perfumes diseñada para perdurar y dejar una huella inolvidable.
+        </p>
+      </div>
+
+      <div class="flex flex-col items-center md:items-start">
+        <h4 class="font-serif text-lg text-brand-dark mb-6 font-medium lowercase">enlaces rápidos</h4>
+        <ul class="space-y-4 text-[13px] uppercase tracking-widest text-brand-dark/60">
+          <li><a href="/shop" class="hover:text-brand-dark transition-colors">Catálogo completo</a></li>
+          <li><a href="/about" class="hover:text-brand-dark transition-colors">Nuestra historia</a></li>
+          <li><a href="/faq" class="hover:text-brand-dark transition-colors">Preguntas frecuentes</a></li>
+          <li><a href="/contact" class="hover:text-brand-dark transition-colors">Contacto</a></li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col items-center md:items-start w-full">
+        <h4 class="font-serif text-lg text-brand-dark mb-6 font-medium lowercase">seguinos</h4>
+        <a
+          href={SITE.instagramUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center space-x-2.5 text-brand-dark/60 hover:text-brand-dark transition-colors mb-4 text-sm uppercase tracking-wider"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
+          </svg>
+          <span>{SITE.instagramHandle}</span>
+        </a>
+        <a
+          href={whatsappHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-sm uppercase tracking-wider text-brand-dark/60 hover:text-brand-dark transition-colors mb-8"
+        >
+          Asesoramiento por WhatsApp
+        </a>
+
+        <h4 class="font-serif text-lg text-brand-dark mb-4 font-medium lowercase">boletín</h4>
+        <form class="flex w-full max-w-sm border-b border-brand-dark/25 pb-1">
+          <input
+            type="email"
+            placeholder="Tu email..."
+            class="bg-transparent px-2 py-1.5 flex-grow text-sm focus:outline-none placeholder-brand-dark/45 font-light"
+            required
+          />
+          <button type="submit" class="text-xs uppercase tracking-[0.2em] text-brand-dark hover:text-brand-gold transition-colors font-medium">
+            Suscribir
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="border-t border-brand-dark/5 pt-8 flex flex-col md:flex-row justify-between items-center text-xs uppercase tracking-widest text-brand-dark/40 font-medium">
+      <p>&copy; {new Date().getFullYear()} {SITE.brandFull}. Todos los derechos reservados.</p>
+      <div class="flex space-x-6 mt-4 md:mt-0">
+        <a href="/privacy" class="hover:text-brand-dark transition-colors">Privacidad</a>
+        <a href="/terms" class="hover:text-brand-dark transition-colors">Términos</a>
+      </div>
+    </div>
+  </div>
+</footer>

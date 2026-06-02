@@ -1,0 +1,25 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ShopCatalog from '../components/sections/ShopCatalog';
+import { getProducts } from '../lib/db';
+
+const products = getProducts();
+---
+
+<Layout title="Catálogo | Lé Désir Fragancias" description="Explora nuestra exclusiva colección de fragancias seleccionadas para perdurar y reflejar tu esencia.">
+  <div class="bg-brand-light min-h-screen pt-40 pb-32">
+    <div class="container mx-auto px-4 md:px-8">
+      <!-- Title / Header -->
+      <div class="text-center mb-24 max-w-xl mx-auto space-y-4">
+        <span class="text-xs uppercase tracking-[0.3em] text-brand-gold font-semibold block animate-fade-in">catálogo</span>
+        <h1 class="font-serif text-4xl md:text-5xl text-brand-dark font-light lowercase">nuestra colección</h1>
+        <p class="text-sm sm:text-base text-brand-dark/60 font-light leading-relaxed">
+          Esencias selectas concebidas bajo la filosofía del minimalismo olfativo. Cada aroma representa un recuerdo, un deseo, una emoción persistente.
+        </p>
+      </div>
+
+      <!-- Catalog Grid Component -->
+      <ShopCatalog products={products} client:load />
+    </div>
+  </div>
+</Layout>

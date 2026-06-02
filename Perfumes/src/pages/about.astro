@@ -1,0 +1,90 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Nosotros | Lé Désir Fragancias" description="Conoce la historia detrás de Lé Désir, nuestra pasión por la alta perfumería y el arte de las fragancias exclusivas.">
+  <div class="bg-brand-light min-h-screen pt-40 pb-32">
+    <div class="container mx-auto px-4 md:px-8 max-w-5xl">
+      
+      <!-- Hero Section of About -->
+      <div class="text-center mb-24 max-w-xl mx-auto space-y-4">
+        <span class="text-xs uppercase tracking-[0.3em] text-brand-gold font-semibold block">nuestra historia</span>
+        <h1 class="font-serif text-4xl md:text-5xl text-brand-dark font-light lowercase">el arte de la perfumería</h1>
+        <p class="text-sm sm:text-base text-brand-dark/60 font-light leading-relaxed">
+          Nacimos del deseo de transformar recuerdos en fragancias. En Lé Désir, creemos que un perfume no es solo un aroma; es la huella invisible que define quién eres.
+        </p>
+      </div>
+
+      <!-- Split Grid Section 1 (Asymmetrical layout) -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 items-center mb-28">
+        <div class="md:col-span-6 relative overflow-hidden aspect-[4/3] md:aspect-[5/6] bg-[#F3F0E9] rounded-xs">
+          <img 
+            src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=1000&auto=format&fit=crop" 
+            alt="Ingredientes de perfume y esencias" 
+            className="w-full h-full object-cover transition-transform duration-[1.5s] hover:scale-102"
+          />
+        </div>
+        <div class="md:col-span-6 space-y-6">
+          <span class="text-xs uppercase tracking-[0.25em] text-brand-gold font-semibold">el origen</span>
+          <h2 class="font-serif text-2xl md:text-3xl text-brand-dark font-light lowercase">pasión por lo exclusivo</h2>
+          <p class="text-brand-dark/70 text-sm sm:text-base leading-relaxed font-light">
+            Lé Désir comenzó como un proyecto boutique dedicado a explorar acordes olfativos complejos. Nuestra búsqueda nos llevó a colaborar con perfumistas que combinan técnicas tradicionales con visiones contemporáneas.
+          </p>
+          <p class="text-brand-dark/70 text-sm leading-relaxed font-light">
+            Seleccionamos cada fragancia pensando en la personalidad y las emociones de quien la lleva. No seguimos modas pasajeras; buscamos la atemporalidad y la sofisticación que trascienden las estaciones.
+          </p>
+        </div>
+      </div>
+
+      <!-- Split Grid Section 2 (Inverted & asymmetrical) -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 items-center mb-32">
+        <div class="md:col-span-6 md:order-2 relative overflow-hidden aspect-[4/3] md:aspect-[5/6] bg-[#F3F0E9] rounded-xs">
+          <img 
+            src="https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=1000&auto=format&fit=crop" 
+            alt="Proceso de selección de aromas" 
+            className="w-full h-full object-cover transition-transform duration-[1.5s] hover:scale-102"
+          />
+        </div>
+        <div class="md:col-span-6 md:order-1 space-y-6">
+          <span class="text-xs uppercase tracking-[0.25em] text-brand-gold font-semibold">nuestra filosofía</span>
+          <h2 class="font-serif text-2xl md:text-3xl text-brand-dark font-light lowercase">calidad sin concesiones</h2>
+          <p class="text-brand-dark/70 text-sm sm:text-base leading-relaxed font-light">
+            Creemos que la longevidad y la estela son fundamentales en un buen perfume. Por eso, todas nuestras fragancias cuentan con altas concentraciones de aceites esenciales (Eau de Parfum y Extrait de Parfum).
+          </p>
+          <ul class="space-y-4 text-sm text-brand-dark/65 font-light">
+            <li class="flex items-center space-x-3.5">
+              <span class="w-1.5 h-[1px] bg-brand-gold"></span>
+              <span>Ingredientes naturales de alta pureza.</span>
+            </li>
+            <li class="flex items-center space-x-3.5">
+              <span class="w-1.5 h-[1px] bg-brand-gold"></span>
+              <span>Excelente fijación y durabilidad en piel.</span>
+            </li>
+            <li class="flex items-center space-x-3.5">
+              <span class="w-1.5 h-[1px] bg-brand-gold"></span>
+              <span>Estética y envasado minimalista y sostenible.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- CTA Banner in Warm Sand -->
+      <div class="bg-[#F3F0E9] p-12 md:p-20 text-center space-y-6 rounded-xs">
+        <h2 class="font-serif text-3xl text-brand-dark font-light lowercase">encuentra tu sello olfativo</h2>
+        <p class="text-brand-dark/65 text-sm sm:text-base max-w-md mx-auto font-light leading-relaxed">
+          Ya sea que busques la frescura de los cítricos, la calidez del ámbar o el misterio de las maderas orientales, tenemos una creación diseñada especialmente para ti.
+        </p>
+        <div class="pt-6">
+          <a 
+            href="/shop" 
+            className="group inline-flex items-center space-x-3 text-xs uppercase tracking-[0.25em] font-semibold text-brand-dark transition-colors"
+          >
+            <span>explorar el catálogo</span>
+            <span className="h-[1px] bg-brand-dark w-8 group-hover:w-16 transition-all duration-300 ease-out"></span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</Layout>

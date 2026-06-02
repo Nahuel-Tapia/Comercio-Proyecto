@@ -1,0 +1,27 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/layout/Navbar';
+import Footer from '../../components/layout/Footer.astro';
+import AdminDashboard from '../../components/admin/AdminDashboard';
+import { getProducts } from '../../lib/db';
+
+const session = Astro.cookies.get('admin_session');
+
+if (!session) {
+  return Astro.redirect('/login');
+}
+
+const initialProducts = getProducts();
+---
+
+<Layout title="Panel de Control - Lé Désir">
+  <Navbar client:load />
+  
+  <main className="pt-32 pb-24 min-h-screen bg-brand-light">
+    <div className="container mx-auto px-4">
+      <AdminDashboard initialProducts={initialProducts} client:only="react" />
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

@@ -1,0 +1,27 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SITE } from '../data/site';
+---
+
+<Layout title="Términos | Lé Désir Fragancias" description="Términos de compra y uso de Lé Désir Fragancias.">
+  <div class="bg-brand-light min-h-screen pt-40 pb-32">
+    <div class="container mx-auto px-4 md:px-8 max-w-3xl">
+      <span class="text-xs uppercase tracking-[0.3em] text-brand-gold font-semibold block mb-4">legal</span>
+      <h1 class="font-serif text-4xl md:text-5xl text-brand-dark font-light lowercase mb-8">términos</h1>
+      <div class="space-y-6 text-sm text-brand-dark/65 leading-relaxed font-light">
+        <p>
+          Los precios publicados son estimativos y pueden confirmarse al momento de coordinar el pedido por WhatsApp.
+        </p>
+        <p>
+          La disponibilidad, métodos de pago, costos de envío y tiempos de entrega se confirman antes de cerrar la compra.
+        </p>
+        <p>
+          Las fragancias se recomiendan según notas, intensidad y ocasión, pero el rendimiento puede variar por tipo de piel, clima y forma de aplicación.
+        </p>
+        <p>
+          Para cambios o consultas sobre un pedido, contactá a {SITE.brandFull} por los canales oficiales publicados en el sitio.
+        </p>
+      </div>
+    </div>
+  </div>
+</Layout>
