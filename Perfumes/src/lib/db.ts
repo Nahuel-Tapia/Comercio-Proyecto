@@ -134,6 +134,26 @@ export const initDb = () => {
     );
   `);
 
+  // Tabla de configuración general (Ajustes)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL
+    );
+  `);
+
+  // Sembrar configuraciones por defecto
+  const defaultSettings = [
+    { key: 'shipping_cost', value: '5000' },
+    { key: 'whatsapp_number', value: '5491123456789' },
+    { key: 'header_banner', value: '¡Novedades exclusivas! Envíos gratis en compras superiores a $35.000' }
+  ];
+
+  const insertSetting = db.prepare('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)');
+  for (const setting of defaultSettings) {
+    insertSetting.run(setting.key, setting.value);
+  }
+
   // Crear cupones por defecto
   const testCoupon = db.prepare('SELECT code FROM coupons WHERE code = ?').get('LEDESIR10');
   if (!testCoupon) {

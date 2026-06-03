@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Minus, Plus, ShoppingBag, Trash2, X } from 'lucide-react';
 import { SITE } from '../../data/site';
@@ -44,8 +44,20 @@ export default function SlideCart({
   const [couponError, setCouponError] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string, discount_type: string, discount_value: number } | null>(null);
 
+  const [shippingCost, setShippingCost] = useState(5000);
+  const [whatsappNumber, setWhatsappNumber] = useState(SITE.whatsappNumber);
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.shipping_cost) setShippingCost(Number(data.shipping_cost));
+        if (data.whatsapp_number) setWhatsappNumber(data.whatsapp_number);
+      })
+      .catch(() => {});
+  }, []);
+
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const SHIPPING_COST = 5000;
 
   // Calculate discount
   let discountAmount = 0;
@@ -58,7 +70,7 @@ export default function SlideCart({
   }
 
   const finalTotal = shippingMethod === 'envio' 
-    ? Math.max(0, subtotal - discountAmount) + SHIPPING_COST 
+    ? Math.max(0, subtotal - discountAmount) + shippingCost 
     : Math.max(0, subtotal - discountAmount);
 
   const handleApplyCoupon = async (e: React.MouseEvent) => {
@@ -137,13 +149,13 @@ export default function SlideCart({
               ).toLocaleString('es-AR')}`
           )
           .join('\n');
-        const shippingLine = shippingMethod === 'envio' ? `\n*Envío:* $${SHIPPING_COST.toLocaleString('es-AR')}` : '';
+        const shippingLine = shippingMethod === 'envio' ? `\n*Envío:* $${shippingCost.toLocaleString('es-AR')}` : '';
         const couponLine = appliedCoupon ? `\n*Cupón aplicado:* ${appliedCoupon.code} (-$${discountAmount.toLocaleString('es-AR')})` : '';
         const totalFooter = `\n${shippingLine}${couponLine}\n*Total estimado: $${finalTotal.toLocaleString('es-AR')}*`;
         const note = '\n\nQuedo atento/a para coordinar pago, disponibilidad y entrega.';
         const fullMessage = encodeURIComponent(orderTitle + clientDetails + itemsHeader + itemsList + totalFooter + note);
 
-        window.open(`https://wa.me/${SITE.whatsappNumber}?text=${fullMessage}`, '_blank', 'noopener,noreferrer');
+        window.open(`https://wa.me/${whatsappNumber}?text=${fullMessage}`, '_blank', 'noopener,noreferrer');
       }
 
       onClearCart();
@@ -499,7 +511,7 @@ export default function SlideCart({
                   <div className="flex justify-between items-center text-xs">
                     <span className="text-brand-dark/50 uppercase tracking-wider">Envío</span>
                     <span className="font-medium text-brand-dark">
-                      ${SHIPPING_COST.toLocaleString('es-AR')}
+                      ${shippingCost.toLocaleString('es-AR')}
                     </span>
                   </div>
                 )}

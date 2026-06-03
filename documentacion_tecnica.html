@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECommerce - Documentación Técnica y Arquitectura</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --sidebar-color: #111827;
+            --card-color: #1f2937;
+            --border-color: #374151;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #8b5cf6;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --font-main: 'Outfit', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --gradient: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        aside {
+            width: 320px;
+            background-color: var(--sidebar-color);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 1.25rem;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .logo-text h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .logo-text span {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        nav {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .nav-group-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-links a.active {
+            color: white;
+            background: var(--gradient);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Main Content Container */
+        main {
+            margin-left: 320px;
+            flex: 1;
+            padding: 4rem;
+            max-width: 1200px;
+        }
+
+        header {
+            margin-bottom: 4rem;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+        }
+
+        section {
+            margin-bottom: 5rem;
+            scroll-margin-top: 2rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: -0.025em;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+        }
+
+        h3 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem 0;
+            color: var(--accent-primary);
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: #d1d5db;
+        }
+
+        /* Architecture Diagram Container */
+        .diagram-container {
+            background-color: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+            overflow: auto;
+        }
+
+        .mermaid {
+            background-color: transparent !important;
+            width: 100%;
+        }
+
+        /* Project Layers Grid */
+        .layers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .layer-card {
+            background-color: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .layer-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .layer-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .layer-card:hover::before {
+            opacity: 1;
+        }
+
+        .layer-number {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .layer-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: white;
+        }
+
+        .layer-desc {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Custom File Tree styling */
+        .tree {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            background-color: #0d1117;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        .tree-folder {
+            color: #ffca28;
+            font-weight: 600;
+        }
+
+        .tree-file {
+            color: #a5d6ff;
+        }
+
+        .tree-comment {
+            color: #8b949e;
+            font-style: italic;
+            margin-left: 1.5rem;
+        }
+
+        /* Highlighting and lists */
+        ul, ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: #d1d5db;
+        }
+
+        li strong {
+            color: white;
+        }
+
+        .alert {
+            background-color: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--accent-primary);
+            padding: 1.25rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.25rem;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            background-color: rgba(255, 255, 255, 0.08);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: #f43f5e;
+        }
+
+        pre {
+            background-color: #0d1117;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: #e6edf3;
+            font-size: 0.9rem;
+        }
+
+        .tech-tag {
+            display: inline-block;
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--accent-primary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .tech-tags {
+            margin-top: 1rem;
+        }
+
+        /* Footer styling */
+        footer {
+            margin-top: 6rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 1024px) {
+            aside {
+                display: none;
+            }
+            main {
+                margin-left: 0;
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Menu -->
+    <aside>
+        <div class="logo-area">
+            <div class="logo-icon">EC</div>
+            <div class="logo-text">
+                <h1>ECommerce</h1>
+                <span>Backend Docs</span>
+            </div>
+        </div>
+
+        <nav>
+            <div>
+                <div class="nav-group-title">Introducción</div>
+                <ul class="nav-links">
+                    <li><a href="#arquitectura" class="active">Arquitectura</a></li>
+                    <li><a href="#proyectos">Capas de la Solución</a></li>
+                </ul>
+            </div>
+            <div>
+                <div class="nav-group-title">Detalle de Archivos</div>
+                <ul class="nav-links">
+                    <li><a href="#capa-dominio">1. Domain</a></li>
+                    <li><a href="#capa-application">2. Application</a></li>
+                    <li><a href="#capa-infrastructure">3. Infrastructure</a></li>
+                    <li><a href="#capa-api">4. Api</a></li>
+                </ul>
+            </div>
+            <div>
+                <div class="nav-group-title">Calidad y Pruebas</div>
+                <ul class="nav-links">
+                    <li><a href="#testing">Estrategia de Tests</a></li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main>
+        <header>
+            <h1>Estructura Técnica del Backend</h1>
+            <p>Guía de arquitectura, funcionamiento de archivos y patrones de diseño implementados.</p>
+        </header>
+
+        <!-- Arquitectura General -->
+        <section id="arquitectura">
+            <h2>Estructura de Arquitectura Limpia (Clean Architecture)</h2>
+            <p>
+                El proyecto está desarrollado utilizando los principios de **Clean Architecture**, lo que asegura un alto nivel de desacoplamiento tecnológico. Las dependencias van de afuera hacia adentro: las capas externas (Bases de datos, Controladores API) conocen las capas internas (Reglas de Negocio), pero el núcleo central (Dominio) no tiene dependencia de nada exterior.
+            </p>
+
+            <div class="diagram-container">
+                <pre class="mermaid">
+                    graph TD
+                        %% Definición de estilos
+                        classDef domain fill:#8b5cf6,stroke:#7c3aed,stroke-width:2px,color:#fff;
+                        classDef app fill:#3b82f6,stroke:#2563eb,stroke-width:2px,color:#fff;
+                        classDef infra fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff;
+                        classDef api fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff;
+
+                        %% Capas y dependencias
+                        Presentation[Capa de Presentación: ECommerce.Api] --> Application[Capa de Aplicación: ECommerce.Application]
+                        Infrastructure[Capa de Infraestructura: ECommerce.Infrastructure] --> Application
+                        Application --> Domain[Capa de Dominio: ECommerce.Domain]
+
+                        class Domain domain;
+                        class Application app;
+                        class Infrastructure infra;
+                        class Presentation api;
+                </pre>
+            </div>
+
+            <div class="alert">
+                <div class="alert-title">Ventaja Clave para la Defensa del Proyecto</div>
+                Si el día de mañana se decide cambiar la base de datos de SQLite a PostgreSQL o SQL Server, solo se modifica la **Capa de Infraestructura**. Todo el código de negocio del **Dominio** y los casos de uso de **Aplicación** permanecen intactos.
+            </div>
+        </section>
+
+        <!-- Proyectos de la Solución -->
+        <section id="proyectos">
+            <h2>Los 4 Proyectos Principales</h2>
+            <p>La solución de Visual Studio consta de 5 proyectos independientes, cada uno enfocado en una única capa de responsabilidad:</p>
+
+            <div class="layers-grid">
+                <div class="layer-card">
+                    <div>
+                        <div class="layer-number">Capa 1</div>
+                        <div class="layer-title">ECommerce.Domain</div>
+                        <div class="layer-desc">Contiene el núcleo y reglas de negocio puras. Es 100% independiente de bases de datos y librerías externas.</div>
+                    </div>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Entities</span>
+                        <span class="tech-tag">Value Objects</span>
+                        <span class="tech-tag">DDD</span>
+                    </div>
+                </div>
+
+                <div class="layer-card">
+                    <div>
+                        <div class="layer-number">Capa 2</div>
+                        <div class="layer-title">ECommerce.Application</div>
+                        <div class="layer-desc">Orquesta los casos de uso y flujos de negocio del sistema utilizando CQRS con MediatR.</div>
+                    </div>
+                    <div class="tech-tags">
+                        <span class="tech-tag">MediatR</span>
+                        <span class="tech-tag">CQRS</span>
+                        <span class="tech-tag">FluentValidation</span>
+                    </div>
+                </div>
+
+                <div class="layer-card">
+                    <div>
+                        <div class="layer-number">Capa 3</div>
+                        <div class="layer-title">ECommerce.Infrastructure</div>
+                        <div class="layer-desc">Implementa los accesos a datos mediante Entity Framework Core, encriptación BCrypt y tokens JWT.</div>
+                    </div>
+                    <div class="tech-tags">
+                        <span class="tech-tag">EF Core</span>
+                        <span class="tech-tag">SQLite</span>
+                        <span class="tech-tag">JWT</span>
+                    </div>
+                </div>
+
+                <div class="layer-card">
+                    <div>
+                        <div class="layer-number">Capa 4</div>
+                        <div class="layer-title">ECommerce.Api</div>
+                        <div class="layer-desc">Punto de entrada de red. Controladores HTTP que reciben las peticiones y exponen la documentación Swagger.</div>
+                    </div>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Controllers</span>
+                        <span class="tech-tag">Routing</span>
+                        <span class="tech-tag">Auth</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Capa de Dominio -->
+        <section id="capa-dominio">
+            <h2>1. Capa ECommerce.Domain (El Corazón del Negocio)</h2>
+            <p>
+                Sigue los principios de <strong>Domain-Driven Design (DDD)</strong>. Su principal característica es que las entidades controlan su propio comportamiento interno y no permiten estados inválidos.
+            </p>
+
+            <h3>Value Objects (Objetos de Valor)</h3>
+            <p>No tienen una identidad única (un <code>Id</code>). Se definen por la igualdad de sus propiedades y son inmutables.</p>
+            <ul>
+                <li><strong>Money.cs:</strong> Encapsula una cantidad (<code>decimal Amount</code>) y la moneda (<code>string Currency</code>). Valida que no existan valores negativos y maneja sumas aritméticas seguras de dinero.</li>
+                <li><strong>Email.cs:</strong> Valida que toda cadena asignada a un correo electrónico cumpla con el formato RegExp estándar en su constructor. Si es incorrecto, lanza un error de forma inmediata.</li>
+                <li><strong>ProductName.cs:</strong> Valida que el nombre de un producto sea obligatorio y no supere los 200 caracteres de longitud.</li>
+            </ul>
+
+            <h3>Entities (Entidades)</h3>
+            <p>Tienen un identificador único (<code>Id</code>) y representan los objetos clave del negocio con comportamiento dinámico.</p>
+            <ul>
+                <li><strong>Product.cs:</strong> Representa un producto en venta. Expone el método <code>Reserve(quantity)</code> que descuenta el stock de manera controlada o lanza una excepción específica si no hay disponibilidad.</li>
+                <li><strong>Order.cs:</strong> Representa una compra. Contiene el método <code>AddItem(product, quantity)</code>. Este método se asegura de que el producto sea válido, restringe el stock del mismo e incrementa el total de la orden sumando los objetos <code>Money</code>.</li>
+                <li><strong>OrderItem.cs:</strong> Detalle individual (línea de factura) de un producto agregado a la orden con su precio unitario y cantidad.</li>
+                <li><strong>User.cs:</strong> Usuario del sistema con su rol de seguridad (<code>Admin</code> o <code>User</code>) y su clave encriptada mediante hashing seguro.</li>
+            </ul>
+
+            <h3>Domain Exceptions</h3>
+            <ul>
+                <li><strong>DomainRuleException.cs:</strong> Excepción base para cualquier violación de las reglas de negocio del dominio.</li>
+                <li><strong>InsufficientStockException.cs:</strong> Se lanza cuando se intenta realizar un pedido que excede el stock disponible, previniendo compras inconsistentes.</li>
+            </ul>
+        </section>
+
+        <!-- Capa de Aplicación -->
+        <section id="capa-application">
+            <h2>2. Capa ECommerce.Application (Casos de Uso)</h2>
+            <p>
+                Esta capa implementa el patrón **CQRS** (Command Query Responsibility Segregation). Las operaciones de lectura (Consultas/Queries) están completamente separadas de las operaciones de escritura (Comandos/Commands). Para lograr este desacoplamiento se utiliza la librería **MediatR**.
+            </p>
+
+            <h3>Estructura de Features (UseCases)</h3>
+            <div class="tree">
+                <span class="tree-folder">UseCases/</span><br>
+                &nbsp;&nbsp;├── <span class="tree-folder">Products/</span><br>
+                &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="tree-folder">Commands/</span><br>
+                &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="tree-file">CreateProductCommand.cs</span> <span class="tree-comment">// Crea el producto y valida reglas</span><br>
+                &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="tree-file">DeleteProductCommand.cs</span> <span class="tree-comment">// Elimina por Id (solo Administradores)</span><br>
+                &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="tree-folder">Queries/</span><br>
+                &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="tree-file">GetAllProductsQuery.cs</span> <span class="tree-comment">// Lista todo el catálogo</span><br>
+                &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="tree-file">GetProductByIdQuery.cs</span> <span class="tree-comment">// Busca un producto individual</span><br>
+                &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="tree-file">ProductMapper.cs</span> <span class="tree-comment">// Conversiones rápidas Entity <-> DTO</span><br>
+                &nbsp;&nbsp;└── <span class="tree-folder">Orders/</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="tree-folder">Commands/</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="tree-file">CreateOrderCommand.cs</span> <span class="tree-comment">// Compra y descuenta stock en una transacción</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="tree-file">OrderItemDto.cs</span> <span class="tree-comment">// Objeto de transporte para los items</span>
+            </div>
+
+            <h3>Pipeline Behaviors: Filtro Automático de Validaciones</h3>
+            <p>
+                <strong>ValidationBehavior.cs:</strong> En lugar de escribir comprobaciones manuales de validación dentro de cada controlador HTTP o de cada comando, el proyecto cuenta con un interceptor global de MediatR. Cada vez que viaja un comando, este interceptor busca si existe un validador escrito en FluentValidation (como <code>CreateProductValidator.cs</code>), lo ejecuta de forma automática y cancela la operación antes de llegar al controlador si hay errores.
+            </p>
+
+            <h3>Mapeadores Limpios (Mappers)</h3>
+            <p>
+                <strong>ProductMapper.cs:</strong> Realiza el mapeo directo campo a campo entre las entidades del dominio y los DTOs que se retornan al exterior de forma manual. Esto evita dependencias pesadas de librerías como AutoMapper y mantiene la velocidad de procesamiento al máximo.
+            </p>
+        </section>
+
+        <!-- Capa de Infraestructura -->
+        <section id="capa-infrastructure">
+            <h2>3. Capa ECommerce.Infrastructure (Tecnología y Persistencia)</h2>
+            <p>
+                Es la capa técnica del proyecto. Implementa los contratos definidos en la capa de aplicación interactuando con librerías del sistema, bases de datos y la red.
+            </p>
+
+            <h3>Persistencia con Entity Framework Core</h3>
+            <ul>
+                <li><strong>ApplicationDbContext.cs:</strong> Declara las tablas de base de datos (DbSet) y aplica configuraciones específicas usando Fluent API en lugar de decoradores en las entidades (lo que mantendría acoplado el dominio a la base de datos).</li>
+                <li><strong>Configurations (UserConfiguration.cs, etc.):</strong> Permite mapear los Value Objects del dominio (como <code>Money</code>) a tipos de datos planos soportados por SQLite (por ejemplo, guardando el precio como un <code>decimal</code> simple y reconstruyendo el objeto al recuperarlo gracias al método <code>.HasConversion()</code>). Además, aquí se ejecuta la creación inicial de usuarios mediante Seed Data.</li>
+                <li><strong>SQLite:</strong> Motor de base de datos SQL local ligero y veloz, ideal para ambientes de demostración y pruebas sin necesidad de un servidor externo.</li>
+            </ul>
+
+            <h3>Seguridad y Autenticación</h3>
+            <ul>
+                <li><strong>JwtTokenService.cs:</strong> Se encarga de generar los tokens JSON Web Token (JWT) tras un inicio de sesión exitoso. Los tokens van firmados digitalmente mediante una clave secreta configurada en el servidor y portan los roles del usuario.</li>
+                <li><strong>BCrypt:</strong> Herramienta estándar de encriptación utilizada para aplicar Hash seguro a las contraseñas de los usuarios persistidos en base de datos. Ninguna contraseña es legible en texto plano en la base de datos SQLite.</li>
+            </ul>
+
+            <h3>Manejador Global de Errores</h3>
+            <ul>
+                <li><strong>GlobalExceptionHandler.cs:</strong> Es un Middleware de ASP.NET Core que actúa como red de seguridad para la API. Si ocurre un error inesperado (o una excepción de negocio como <code>InsufficientStockException</code>), este middleware la atrapa, detiene la caída de la aplicación, asigna el código HTTP adecuado (400 Bad Request, 404 Not Found, 401 Unauthorized) y devuelve un formato estándar legible para los clientes: <strong>RFC 7807 (Problem Details)</strong>.</li>
+            </ul>
+        </section>
+
+        <!-- Capa API -->
+        <section id="capa-api">
+            <h2>4. Capa ECommerce.Api (La Entrada del Sistema)</h2>
+            <p>
+                Es una API Web REST construida sobre ASP.NET Core. No contiene lógica de negocio y solo funciona como capa de despacho y serialización JSON.
+            </p>
+
+            <h3>Controladores HTTP</h3>
+            <ul>
+                <li><strong>AuthController.cs:</strong> Expone el endpoint <code>/api/auth/login</code>. Verifica el usuario/contraseña usando BCrypt y delega la emisión del token al <code>JwtTokenService</code>.</li>
+                <li><strong>ProductsController.cs:</strong> Expone endpoints CRUD para el catálogo. Cuenta con restricciones de roles: solo los administradores con token válido (<code>[Authorize(Roles = "Admin")]</code>) pueden crear o eliminar artículos.</li>
+                <li><strong>OrdersController.cs:</strong> Expone la ruta <code>/api/orders</code> para enviar una solicitud de compra de productos de manera autenticada.</li>
+            </ul>
+        </section>
+
+        <!-- Testing -->
+        <section id="testing">
+            <h2>5. Pruebas y Aseguramiento de Calidad</h2>
+            <p>El código cuenta con una sólida estrategia de pruebas automatizadas:</p>
+
+            <div class="alert" style="background-color: rgba(16, 185, 129, 0.1); border-left-color: #10b981;">
+                <div class="alert-title" style="color: #10b981;">Aseguramiento mediante Dos Tipos de Pruebas</div>
+                <strong>Pruebas Unitarias:</strong> Validan la consistencia de las reglas (ej. que no se puedan crear importes de dinero negativos en <code>Money</code>).<br>
+                <strong>Pruebas de Integración (E2E):</strong> Simulan peticiones HTTP reales a la API usando un script automatizado para verificar el flujo completo.
+            </div>
+
+            <h3>Script de Pruebas de Integración E2E (test_api.ps1)</h3>
+            <p>
+                El archivo de prueba de integración automatizada realiza el siguiente flujo de extremo a extremo:
+            </p>
+            <ol>
+                <li>Inicia sesión con la cuenta de <strong>Usuario Regular</strong> y comprueba la obtención de un token JWT.</li>
+                <li>Inicia sesión con la cuenta de <strong>Administrador</strong> para adquirir permisos elevados.</li>
+                <li>Registra un producto de prueba interactuando con el endpoint POST autenticado.</li>
+                <li>Prueba los controles de acceso: el usuario regular intenta borrar el producto y el servidor debe responder con un error **403 Forbidden** (Acceso Denegado).</li>
+                <li>El administrador realiza el borrado del producto exitosamente.</li>
+                <li>Crea un pedido con múltiples ítems, validando que el motor de persistencia SQLite procese la transacción, actualice los inventarios correspondientes y responda con **201 Created**.</li>
+            </ol>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 - ECommerce Backend Docs | Diseñado bajo Clean Architecture y DDD</p>
+        </footer>
+    </main>
+
+    <!-- Mermaid Rendering Logic -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            securityLevel: 'loose',
+            themeVariables: {
+                background: 'transparent',
+                primaryColor: '#1f2937',
+                primaryTextColor: '#f3f4f6',
+                lineColor: '#374151'
+            }
+        });
+    </script>
+</body>
+</html>

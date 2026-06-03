@@ -232,7 +232,7 @@ function ProductFormModal({
 }
 
 export default function AdminDashboard({ initialProducts }: { initialProducts: PerfumeProduct[] }) {
-  const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'stats' | 'coupons' | 'messages' | 'newsletter' | 'reviews'>('products');
+  const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'stats' | 'coupons' | 'messages' | 'newsletter' | 'reviews' | 'settings'>('products');
   const [products, setProducts] = useState<PerfumeProduct[]>(initialProducts);
   const [orders, setOrders] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
@@ -242,6 +242,7 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
   const [newsletterSearch, setNewsletterSearch] = useState('');
   const [reviewsList, setReviewsList] = useState<any[]>([]);
   const [reviewsSearch, setReviewsSearch] = useState('');
+  const [settings, setSettings] = useState({ shipping_cost: '5000', whatsapp_number: '5491123456789', header_banner: '' });
   const [newCoupon, setNewCoupon] = useState({
     code: '',
     discount_type: 'percentage',
@@ -287,6 +288,11 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
     if (res.ok) setReviewsList(await res.json());
   };
 
+  const fetchSettings = async () => {
+    const res = await fetch('/api/admin/settings');
+    if (res.ok) setSettings(await res.json());
+  };
+
   useEffect(() => {
     if (activeTab === 'orders') fetchOrders();
     if (activeTab === 'stats') fetchStats();
@@ -294,6 +300,7 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
     if (activeTab === 'messages') fetchMessages();
     if (activeTab === 'newsletter') fetchNewsletter();
     if (activeTab === 'reviews') fetchReviewsList();
+    if (activeTab === 'settings') fetchSettings();
   }, [activeTab]);
 
   const handleCreateCoupon = async (e: React.FormEvent) => {
@@ -486,6 +493,28 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
     }
   };
 
+  const handleUpdateSettings = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settings)
+      });
+      if (res.ok) {
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', message: 'Configuraciones guardadas con éxito' }}));
+      } else {
+        const errData = await res.json();
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: errData.error || 'Error al guardar configuraciones' }}));
+      }
+    } catch (err) {
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error de servidor' }}));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSaveProduct = async (prod: Partial<PerfumeProduct>, file?: File) => {
     setIsLoading(true);
     try {
@@ -607,6 +636,12 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
           >
             Reseñas
           </button>
+          <button 
+            onClick={() => setActiveTab('settings')} 
+            className={`uppercase tracking-widest text-xs font-semibold px-4 py-2.5 md:px-6 md:py-3 transition-colors ${activeTab === 'settings' ? 'bg-brand-dark text-brand-white' : 'text-brand-dark/60 hover:text-brand-dark'}`}
+          >
+            Ajustes
+          </button>
         </div>
       </div>
 
@@ -693,6 +728,18 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
 
       {activeTab === 'orders' && (
         <div>
+          <div className="flex justify-end mb-6">
+            <a 
+              href="/api/admin/export-orders" 
+              download 
+              className="uppercase tracking-widest text-xs font-semibold bg-brand-dark text-brand-white px-6 py-3 hover:bg-brand-gold transition-colors flex items-center gap-2"
+            >
+              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+              </svg>
+              Exportar CSV
+            </a>
+          </div>
           {orders.length === 0 ? (
             <p className="text-center py-12 text-brand-dark/50">No hay órdenes registradas aún.</p>
           ) : (
@@ -1479,6 +1526,63 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
               </div>
             </>
           )}
+        </div>
+      )}
+
+      {activeTab === 'settings' && (
+        <div className="space-y-8 animate-fadeIn">
+          <div className="bg-brand-light/30 border border-brand-dark/10 p-6">
+            <h3 className="text-xs uppercase tracking-widest text-brand-dark/80 font-semibold mb-6 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-brand-gold"></span>
+              Configuración General de la Tienda
+            </h3>
+            
+            <form onSubmit={handleUpdateSettings} className="space-y-6 max-w-xl">
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Costo de Envío a Domicilio ($)</label>
+                <input 
+                  type="number" 
+                  value={settings.shipping_cost}
+                  onChange={e => setSettings(prev => ({ ...prev, shipping_cost: e.target.value }))}
+                  required
+                  min="0"
+                  className="w-full bg-brand-white border border-brand-dark/10 px-4 py-2.5 text-brand-dark focus:outline-none focus:border-brand-gold text-sm"
+                />
+                <p className="text-[10px] text-brand-dark/40 mt-1">Costo fijo que se sumará al subtotal del pedido si el cliente elige el método "Envío".</p>
+              </div>
+
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Número de WhatsApp de la Tienda</label>
+                <input 
+                  type="text" 
+                  value={settings.whatsapp_number}
+                  onChange={e => setSettings(prev => ({ ...prev, whatsapp_number: e.target.value }))}
+                  required
+                  placeholder="Ej: 5491123456789"
+                  className="w-full bg-brand-white border border-brand-dark/10 px-4 py-2.5 text-brand-dark focus:outline-none focus:border-brand-gold text-sm"
+                />
+                <p className="text-[10px] text-brand-dark/40 mt-1">Número telefónico completo con código de país sin símbolos (ej: 549...). Dirección a la que se envían las órdenes por WhatsApp.</p>
+              </div>
+
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Mensaje del Banner Superior (Novedades)</label>
+                <input 
+                  type="text" 
+                  value={settings.header_banner}
+                  onChange={e => setSettings(prev => ({ ...prev, header_banner: e.target.value }))}
+                  placeholder="Mensaje promocional..."
+                  className="w-full bg-brand-white border border-brand-dark/10 px-4 py-2.5 text-brand-dark focus:outline-none focus:border-brand-gold text-sm"
+                />
+                <p className="text-[10px] text-brand-dark/40 mt-1">Aparece en la barra superior de toda la tienda. Dejar en blanco para ocultar el banner.</p>
+              </div>
+
+              <div className="pt-4 flex justify-end">
+                <button type="submit" className="uppercase tracking-widest text-xs font-semibold bg-brand-dark text-brand-white px-8 py-3 hover:bg-brand-gold transition-colors">
+                  Guardar Cambios
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
 

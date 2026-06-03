@@ -172,6 +172,16 @@ export default function Navbar({ products = PRODUCTS }: { products?: PerfumeProd
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [bannerText, setBannerText] = useState('');
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.header_banner) setBannerText(data.header_banner);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -236,11 +246,16 @@ export default function Navbar({ products = PRODUCTS }: { products?: PerfumeProd
         className={cn(
           'fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out',
           isScrolled
-            ? 'bg-brand-white/80 backdrop-blur-md border-b border-brand-dark/5 py-4'
-            : 'bg-transparent py-6'
+            ? 'bg-brand-white/80 backdrop-blur-md border-b border-brand-dark/5'
+            : 'bg-transparent'
         )}
       >
-        <div className="container mx-auto px-4 md:px-8">
+        {bannerText && (
+          <div className="bg-brand-dark text-brand-gold text-[9px] sm:text-[10px] uppercase tracking-widest py-1.5 text-center font-semibold border-b border-brand-gold/10">
+            {bannerText}
+          </div>
+        )}
+        <div className={cn('container mx-auto px-4 md:px-8 transition-all duration-500', isScrolled ? 'py-3.5' : 'py-5')}>
           <div className="flex items-center justify-between relative">
             <button
               className="md:hidden text-brand-dark/70 hover:text-brand-dark transition-colors"
