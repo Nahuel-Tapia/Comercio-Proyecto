@@ -232,10 +232,19 @@ function ProductFormModal({
 }
 
 export default function AdminDashboard({ initialProducts }: { initialProducts: PerfumeProduct[] }) {
-  const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'stats'>('products');
+  const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'stats' | 'coupons' | 'messages'>('products');
   const [products, setProducts] = useState<PerfumeProduct[]>(initialProducts);
   const [orders, setOrders] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
+  const [coupons, setCoupons] = useState<any[]>([]);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [newCoupon, setNewCoupon] = useState({
+    code: '',
+    discount_type: 'percentage',
+    discount_value: '',
+    max_uses: '',
+    expires_at: ''
+  });
   const [isEditing, setIsEditing] = useState<Partial<PerfumeProduct> | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -254,10 +263,129 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
     if (res.ok) setStats(await res.json());
   };
 
+  const fetchCoupons = async () => {
+    const res = await fetch('/api/admin/coupons');
+    if (res.ok) setCoupons(await res.json());
+  };
+
+  const fetchMessages = async () => {
+    const res = await fetch('/api/admin/messages');
+    if (res.ok) setMessages(await res.json());
+  };
+
   useEffect(() => {
     if (activeTab === 'orders') fetchOrders();
     if (activeTab === 'stats') fetchStats();
+    if (activeTab === 'coupons') fetchCoupons();
+    if (activeTab === 'messages') fetchMessages();
   }, [activeTab]);
+
+  const handleCreateCoupon = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCoupon.code || !newCoupon.discount_value) {
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Por favor completa los campos requeridos' }}));
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const payload = {
+        code: newCoupon.code.toUpperCase().trim(),
+        discount_type: newCoupon.discount_type,
+        discount_value: parseFloat(newCoupon.discount_value),
+        max_uses: newCoupon.max_uses ? parseInt(newCoupon.max_uses) : null,
+        expires_at: newCoupon.expires_at || null
+      };
+
+      const res = await fetch('/api/admin/coupons', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setNewCoupon({
+          code: '',
+          discount_type: 'percentage',
+          discount_value: '',
+          max_uses: '',
+          expires_at: ''
+        });
+        await fetchCoupons();
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', message: 'Cupón creado con éxito' }}));
+      } else {
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: data.error || 'Error al crear cupón' }}));
+      }
+    } catch (err) {
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error del servidor' }}));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleToggleCoupon = async (code: string, currentActive: boolean) => {
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/admin/coupons', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, is_active: !currentActive })
+      });
+      if (res.ok) {
+        await fetchCoupons();
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', message: `Cupón ${code} ${!currentActive ? 'activado' : 'desactivado'}` }}));
+      } else {
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error al cambiar estado' }}));
+      }
+    } catch (err) {
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error de servidor' }}));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeleteCoupon = async (code: string) => {
+    if (!confirm(`¿Estás seguro de que deseas eliminar el cupón ${code}?`)) return;
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/admin/coupons', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+      if (res.ok) {
+        await fetchCoupons();
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', message: 'Cupón eliminado' }}));
+      } else {
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error al eliminar cupón' }}));
+      }
+    } catch (err) {
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error de servidor' }}));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeleteMessage = async (id: number) => {
+    if (!confirm('¿Estás seguro de que deseas eliminar este mensaje?')) return;
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/admin/messages', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      if (res.ok) {
+        await fetchMessages();
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', message: 'Mensaje eliminado' }}));
+      } else {
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error al eliminar mensaje' }}));
+      }
+    } catch (err) {
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error de servidor' }}));
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSaveProduct = async (prod: Partial<PerfumeProduct>, file?: File) => {
     setIsLoading(true);
@@ -355,6 +483,18 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
             className={`uppercase tracking-widest text-xs font-semibold px-4 py-2.5 md:px-6 md:py-3 transition-colors ${activeTab === 'stats' ? 'bg-brand-dark text-brand-white' : 'text-brand-dark/60 hover:text-brand-dark'}`}
           >
             Estadísticas
+          </button>
+          <button 
+            onClick={() => setActiveTab('coupons')} 
+            className={`uppercase tracking-widest text-xs font-semibold px-4 py-2.5 md:px-6 md:py-3 transition-colors ${activeTab === 'coupons' ? 'bg-brand-dark text-brand-white' : 'text-brand-dark/60 hover:text-brand-dark'}`}
+          >
+            Cupones
+          </button>
+          <button 
+            onClick={() => setActiveTab('messages')} 
+            className={`uppercase tracking-widest text-xs font-semibold px-4 py-2.5 md:px-6 md:py-3 transition-colors ${activeTab === 'messages' ? 'bg-brand-dark text-brand-white' : 'text-brand-dark/60 hover:text-brand-dark'}`}
+          >
+            Consultas
           </button>
         </div>
       </div>
@@ -681,6 +821,277 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
                 </div>
               </div>
             </>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'coupons' && (
+        <div className="space-y-8 animate-fadeIn">
+          {/* Formulario de creación de cupón */}
+          <div className="bg-brand-light/30 border border-brand-dark/10 p-6">
+            <h3 className="text-xs uppercase tracking-widest text-brand-dark/80 font-semibold mb-6 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-brand-gold"></span>
+              Crear Nuevo Cupón de Descuento
+            </h3>
+            <form onSubmit={handleCreateCoupon} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Código *</label>
+                <input 
+                  type="text" 
+                  value={newCoupon.code} 
+                  onChange={e => setNewCoupon(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
+                  placeholder="EJ: VERANO20" 
+                  className="w-full bg-brand-white border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold uppercase text-sm font-semibold"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Tipo de Descuento *</label>
+                <select 
+                  value={newCoupon.discount_type} 
+                  onChange={e => setNewCoupon(prev => ({ ...prev, discount_type: e.target.value }))}
+                  className="w-full bg-brand-white border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold text-sm"
+                  required
+                >
+                  <option value="percentage">Porcentaje (%)</option>
+                  <option value="fixed">Monto Fijo ($)</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Valor *</label>
+                <input 
+                  type="number" 
+                  value={newCoupon.discount_value} 
+                  onChange={e => setNewCoupon(prev => ({ ...prev, discount_value: e.target.value }))}
+                  placeholder={newCoupon.discount_type === 'percentage' ? 'Ej: 15' : 'Ej: 1500'} 
+                  className="w-full bg-brand-white border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold text-sm"
+                  min="0.01"
+                  step="any"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Límite de Usos</label>
+                <input 
+                  type="number" 
+                  value={newCoupon.max_uses} 
+                  onChange={e => setNewCoupon(prev => ({ ...prev, max_uses: e.target.value }))}
+                  placeholder="Ilimitado" 
+                  className="w-full bg-brand-white border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold text-sm"
+                  min="1"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Fecha de Vencimiento</label>
+                <input 
+                  type="date" 
+                  value={newCoupon.expires_at} 
+                  onChange={e => setNewCoupon(prev => ({ ...prev, expires_at: e.target.value }))}
+                  className="w-full bg-brand-white border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold text-xs"
+                />
+              </div>
+              <div className="lg:col-span-5 flex justify-end">
+                <button type="submit" className="uppercase tracking-widest text-xs font-semibold bg-brand-dark text-brand-white px-8 py-3 hover:bg-brand-gold transition-colors">
+                  Guardar Cupón
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {/* Listado de cupones */}
+          <div>
+            {coupons.length === 0 ? (
+              <p className="text-center py-12 text-brand-dark/50 font-light">No hay cupones registrados.</p>
+            ) : (
+              <>
+                {/* Desktop View */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="border-b border-brand-dark/10 bg-brand-light">
+                        <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Código</th>
+                        <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Tipo</th>
+                        <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Descuento</th>
+                        <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Usos</th>
+                        <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Vence</th>
+                        <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Activo</th>
+                        <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold text-right">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-brand-dark/5">
+                      {coupons.map((coupon) => (
+                        <tr key={coupon.code} className="hover:bg-brand-light/50 transition-colors">
+                          <td className="py-4 px-4 font-mono font-bold text-sm tracking-wider text-brand-dark">{coupon.code}</td>
+                          <td className="py-4 px-4 text-[10px] uppercase tracking-wider font-semibold text-brand-dark/60">
+                            {coupon.discount_type === 'percentage' ? 'Porcentaje' : 'Fijo'}
+                          </td>
+                          <td className="py-4 px-4 font-serif text-sm font-semibold text-brand-dark">
+                            {coupon.discount_type === 'percentage' ? `${coupon.discount_value}%` : `$${coupon.discount_value.toLocaleString('es-AR')}`}
+                          </td>
+                          <td className="py-4 px-4 text-xs text-brand-dark/80">
+                            <span className="font-semibold">{coupon.uses_count}</span>
+                            <span className="text-brand-dark/40 font-light"> / {coupon.max_uses !== null ? coupon.max_uses : '∞'}</span>
+                          </td>
+                          <td className="py-4 px-4 text-xs text-brand-dark/70 font-light">
+                            {coupon.expires_at ? new Date(coupon.expires_at).toLocaleDateString('es-AR') : 'Sin límite'}
+                          </td>
+                          <td className="py-4 px-4">
+                            <button
+                              onClick={() => handleToggleCoupon(coupon.code, !!coupon.is_active)}
+                              className={`relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${coupon.is_active ? 'bg-brand-gold' : 'bg-brand-dark/20'}`}
+                            >
+                              <span
+                                className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-brand-white shadow ring-0 transition duration-200 ease-in-out ${coupon.is_active ? 'translate-x-5' : 'translate-x-0'}`}
+                              />
+                            </button>
+                          </td>
+                          <td className="py-4 px-4 text-right">
+                            <button 
+                              onClick={() => handleDeleteCoupon(coupon.code)} 
+                              className="text-xs uppercase tracking-widest text-red-400 font-semibold hover:text-red-600 transition-colors"
+                            >
+                              Eliminar
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile View */}
+                <div className="md:hidden space-y-4">
+                  {coupons.map((coupon) => (
+                    <div key={coupon.code} className="bg-brand-light/30 border border-brand-dark/10 p-4 space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="font-mono font-bold text-base tracking-wider text-brand-dark">{coupon.code}</span>
+                        <button
+                          onClick={() => handleToggleCoupon(coupon.code, !!coupon.is_active)}
+                          className={`relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${coupon.is_active ? 'bg-brand-gold' : 'bg-brand-dark/20'}`}
+                        >
+                          <span
+                            className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-brand-white shadow ring-0 transition duration-200 ease-in-out ${coupon.is_active ? 'translate-x-5' : 'translate-x-0'}`}
+                          />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <span className="text-brand-dark/40 uppercase tracking-widest text-[9px] block mb-0.5">Tipo</span>
+                          <span className="font-semibold text-brand-dark">{coupon.discount_type === 'percentage' ? 'Porcentaje' : 'Fijo'}</span>
+                        </div>
+                        <div>
+                          <span className="text-brand-dark/40 uppercase tracking-widest text-[9px] block mb-0.5">Valor</span>
+                          <span className="font-serif font-bold text-brand-dark">
+                            {coupon.discount_type === 'percentage' ? `${coupon.discount_value}%` : `$${coupon.discount_value.toLocaleString('es-AR')}`}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-brand-dark/40 uppercase tracking-widest text-[9px] block mb-0.5">Usos</span>
+                          <span className="text-brand-dark">
+                            <span className="font-semibold">{coupon.uses_count}</span>
+                            <span className="text-brand-dark/40 font-light"> / {coupon.max_uses !== null ? coupon.max_uses : '∞'}</span>
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-brand-dark/40 uppercase tracking-widest text-[9px] block mb-0.5">Vencimiento</span>
+                          <span className="text-brand-dark">{coupon.expires_at ? new Date(coupon.expires_at).toLocaleDateString('es-AR') : 'Sin límite'}</span>
+                        </div>
+                      </div>
+                      <div className="pt-2 border-t border-brand-dark/5 flex justify-end">
+                        <button 
+                          onClick={() => handleDeleteCoupon(coupon.code)} 
+                          className="py-1 text-xs uppercase tracking-widest text-red-600 font-semibold border border-red-200 px-3 hover:bg-red-50 transition-colors"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'messages' && (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xs uppercase tracking-widest text-brand-dark/80 font-semibold flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-brand-gold"></span>
+              Bandeja de Consultas Recibidas
+            </h3>
+            <span className="text-[10px] uppercase tracking-widest bg-brand-gold-light/45 px-3 py-1 font-semibold text-brand-gold">
+              {messages.length} {messages.length === 1 ? 'Mensaje' : 'Mensajes'}
+            </span>
+          </div>
+
+          {messages.length === 0 ? (
+            <p className="text-center py-12 text-brand-dark/50 font-light">No hay consultas de clientes registradas.</p>
+          ) : (
+            <div className="space-y-4">
+              {messages.map((msg) => {
+                const formattedDate = new Date(msg.created_at).toLocaleString('es-AR', {
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                });
+                
+                // Formatear enlace de respuesta de WhatsApp
+                const cleanPhone = msg.phone ? msg.phone.replace(/[^0-9]/g, '') : '';
+                const waUrl = cleanPhone 
+                  ? `https://wa.me/${cleanPhone}?text=Hola%20${encodeURIComponent(msg.name)},%20gracias%20por%20escribirnos%20a%20L%C3%A9%20D%C3%A9sir.%20Te%20respondo%20sobre%20tu%20consulta%20por%20${encodeURIComponent(msg.reason || 'contacto')}:` 
+                  : null;
+
+                return (
+                  <div key={msg.id} className="bg-brand-white border border-brand-dark/5 p-6 hover:border-brand-gold/30 transition-all shadow-sm">
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-4">
+                      <div>
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <h4 className="font-serif text-lg text-brand-dark">{msg.name}</h4>
+                          {msg.reason && (
+                            <span className="text-[9px] uppercase tracking-widest bg-brand-gold-light/40 text-brand-dark px-2 py-0.5 font-semibold">
+                              {msg.reason}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex gap-4 text-[10px] text-brand-dark/60 mt-1 uppercase tracking-widest font-semibold">
+                          <span>Tel: {msg.phone || 'No provisto'}</span>
+                          <span>•</span>
+                          <span>{formattedDate}</span>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        {waUrl && (
+                          <a 
+                            href={waUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="text-[10px] uppercase tracking-widest bg-green-600 text-brand-white px-4 py-2 font-semibold hover:bg-green-700 transition-colors flex items-center gap-1.5"
+                          >
+                            <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.59 2.019 14.113.992 11.998.992c-5.452 0-9.887 4.372-9.892 9.8c-.001 1.77.475 3.5 1.378 5.037L2.43 21.53l5.884-1.528c-.58.307-1.127.469-1.667.152zM17.487 14.39c-.3-.15-1.782-.88-2.062-.982-.28-.102-.485-.153-.69.152-.203.305-.79.983-.97 1.186-.18.203-.359.229-.66.078-.3-.15-1.264-.467-2.408-1.488-.89-.793-1.49-1.77-1.666-2.074-.176-.304-.019-.469.13-.619.136-.134.304-.355.456-.533.151-.178.203-.305.304-.508.102-.203.05-.381-.025-.533-.076-.152-.69-1.662-.947-2.28-.25-.6-.524-.518-.72-.528-.18-.009-.387-.01-.595-.01-.207 0-.547.078-.832.39-.285.312-1.09 1.066-1.09 2.6 0 1.533 1.115 3.013 1.267 3.217.152.2 2.193 3.35 5.312 4.698.743.321 1.321.512 1.772.656.748.238 1.429.205 1.968.125.6-.09 1.782-.728 2.032-1.396.25-.668.25-1.242.176-1.396-.075-.152-.28-.254-.58-.404z"/>
+                            </svg>
+                            Responder
+                          </a>
+                        )}
+                        <button 
+                          onClick={() => handleDeleteMessage(msg.id)} 
+                          className="text-[10px] uppercase tracking-widest text-red-600 border border-red-200 px-4 py-2 font-semibold hover:bg-red-50 transition-colors"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </div>
+                    <div className="bg-brand-light p-4 text-sm text-brand-dark/80 font-light whitespace-pre-wrap leading-relaxed border-l-2 border-brand-gold">
+                      {msg.message}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           )}
         </div>
       )}
