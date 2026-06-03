@@ -232,12 +232,14 @@ function ProductFormModal({
 }
 
 export default function AdminDashboard({ initialProducts }: { initialProducts: PerfumeProduct[] }) {
-  const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'stats' | 'coupons' | 'messages'>('products');
+  const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'stats' | 'coupons' | 'messages' | 'newsletter'>('products');
   const [products, setProducts] = useState<PerfumeProduct[]>(initialProducts);
   const [orders, setOrders] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [coupons, setCoupons] = useState<any[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
+  const [newsletter, setNewsletter] = useState<{ id: number; email: string; created_at: string }[]>([]);
+  const [newsletterSearch, setNewsletterSearch] = useState('');
   const [newCoupon, setNewCoupon] = useState({
     code: '',
     discount_type: 'percentage',
@@ -273,11 +275,17 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
     if (res.ok) setMessages(await res.json());
   };
 
+  const fetchNewsletter = async () => {
+    const res = await fetch('/api/admin/newsletter');
+    if (res.ok) setNewsletter(await res.json());
+  };
+
   useEffect(() => {
     if (activeTab === 'orders') fetchOrders();
     if (activeTab === 'stats') fetchStats();
     if (activeTab === 'coupons') fetchCoupons();
     if (activeTab === 'messages') fetchMessages();
+    if (activeTab === 'newsletter') fetchNewsletter();
   }, [activeTab]);
 
   const handleCreateCoupon = async (e: React.FormEvent) => {
@@ -385,6 +393,46 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleDeleteSubscriber = async (id: number) => {
+    if (!confirm('¿Estás seguro de que deseas eliminar este suscriptor?')) return;
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/admin/newsletter', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      if (res.ok) {
+        await fetchNewsletter();
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', message: 'Suscriptor eliminado' }}));
+      } else {
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error al eliminar suscriptor' }}));
+      }
+    } catch (err) {
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error de servidor' }}));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCopyNewsletterEmails = () => {
+    const filtered = newsletter.filter(sub => 
+      sub.email.toLowerCase().includes(newsletterSearch.toLowerCase())
+    );
+    const emailsStr = filtered.map(sub => sub.email).join(', ');
+    if (!emailsStr) {
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'No hay correos para copiar' }}));
+      return;
+    }
+    navigator.clipboard.writeText(emailsStr)
+      .then(() => {
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', message: 'Lista de correos copiada al portapapeles' }}));
+      })
+      .catch(() => {
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error al copiar al portapapeles' }}));
+      });
   };
 
   const handleSaveProduct = async (prod: Partial<PerfumeProduct>, file?: File) => {
@@ -495,6 +543,12 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
             className={`uppercase tracking-widest text-xs font-semibold px-4 py-2.5 md:px-6 md:py-3 transition-colors ${activeTab === 'messages' ? 'bg-brand-dark text-brand-white' : 'text-brand-dark/60 hover:text-brand-dark'}`}
           >
             Consultas
+          </button>
+          <button 
+            onClick={() => setActiveTab('newsletter')} 
+            className={`uppercase tracking-widest text-xs font-semibold px-4 py-2.5 md:px-6 md:py-3 transition-colors ${activeTab === 'newsletter' ? 'bg-brand-dark text-brand-white' : 'text-brand-dark/60 hover:text-brand-dark'}`}
+          >
+            Boletín
           </button>
         </div>
       </div>
@@ -1092,6 +1146,127 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
                 );
               })}
             </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'newsletter' && (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+            <div>
+              <h3 className="text-xs uppercase tracking-widest text-brand-dark/80 font-semibold flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-brand-gold"></span>
+                Suscriptores del Boletín de Novedades
+              </h3>
+              <span className="text-[10px] uppercase tracking-widest bg-brand-gold-light/45 px-3 py-1 font-semibold text-brand-gold mt-2 inline-block">
+                {newsletter.length} {newsletter.length === 1 ? 'Suscriptor' : 'Suscriptores'}
+              </span>
+            </div>
+            <div className="flex gap-2">
+              <button 
+                onClick={handleCopyNewsletterEmails} 
+                className="text-xs uppercase tracking-widest bg-brand-dark text-brand-white px-5 py-2.5 font-semibold hover:bg-brand-gold transition-colors flex items-center gap-2"
+              >
+                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                  <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                </svg>
+                Copiar Lista
+              </button>
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <input 
+              type="text" 
+              value={newsletterSearch} 
+              onChange={e => setNewsletterSearch(e.target.value)} 
+              placeholder="Buscar por correo electrónico..." 
+              className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2.5 text-brand-dark focus:outline-none focus:border-brand-gold text-sm"
+            />
+          </div>
+
+          {newsletter.filter(sub => sub.email.toLowerCase().includes(newsletterSearch.toLowerCase())).length === 0 ? (
+            <p className="text-center py-12 text-brand-dark/50 font-light">No se encontraron suscriptores.</p>
+          ) : (
+            <>
+              {/* Desktop View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-brand-dark/10 bg-brand-light">
+                      <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">ID</th>
+                      <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Correo Electrónico</th>
+                      <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Fecha de Registro</th>
+                      <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold text-right">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-brand-dark/5">
+                    {newsletter
+                      .filter(sub => sub.email.toLowerCase().includes(newsletterSearch.toLowerCase()))
+                      .map((sub) => {
+                        const formattedDate = new Date(sub.created_at).toLocaleString('es-AR', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        });
+                        return (
+                          <tr key={sub.id} className="hover:bg-brand-light/50 transition-colors">
+                            <td className="py-4 px-4 text-sm font-mono text-brand-dark/50">{sub.id}</td>
+                            <td className="py-4 px-4 text-sm font-medium text-brand-dark">{sub.email}</td>
+                            <td className="py-4 px-4 text-xs text-brand-dark/70 font-light">{formattedDate}</td>
+                            <td className="py-4 px-4 text-right">
+                              <button 
+                                onClick={() => handleDeleteSubscriber(sub.id)} 
+                                className="text-xs uppercase tracking-widest text-red-400 font-semibold hover:text-red-600 transition-colors"
+                              >
+                                Dar de Baja
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile View */}
+              <div className="md:hidden space-y-4">
+                {newsletter
+                  .filter(sub => sub.email.toLowerCase().includes(newsletterSearch.toLowerCase()))
+                  .map((sub) => {
+                    const formattedDate = new Date(sub.created_at).toLocaleString('es-AR', {
+                      day: '2-digit',
+                      month: 'short',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    });
+                    return (
+                      <div key={sub.id} className="bg-brand-light/30 border border-brand-dark/10 p-4 space-y-2">
+                        <div className="flex justify-between items-start gap-4">
+                          <div>
+                            <span className="font-mono text-[9px] text-brand-dark/40 block mb-0.5">#{sub.id}</span>
+                            <span className="text-sm font-semibold text-brand-dark break-all">{sub.email}</span>
+                          </div>
+                        </div>
+                        <div className="text-[10px] text-brand-dark/50 font-light">
+                          Registrado: {formattedDate}
+                        </div>
+                        <div className="pt-2 border-t border-brand-dark/5 flex justify-end">
+                          <button 
+                            onClick={() => handleDeleteSubscriber(sub.id)} 
+                            className="py-1 text-[10px] uppercase tracking-widest text-red-600 font-semibold border border-red-200 px-3 hover:bg-red-50 transition-colors"
+                          >
+                            Dar de Baja
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </>
           )}
         </div>
       )}

@@ -478,6 +478,7 @@ export default function ShopCatalog({ products }: { products: PerfumeProduct[] }
   const [compareIds, setCompareIds] = useState<string[]>([]);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(12);
+  const [sortOption, setSortOption] = useState('recommended');
 
   const recommendedProducts = useMemo(() => {
     return [...products]
@@ -490,7 +491,7 @@ export default function ShopCatalog({ products }: { products: PerfumeProduct[] }
   const filteredProducts = useMemo(() => {
     const normalizedSearch = normalizeText(searchQuery.trim());
 
-    return products.filter((product) => {
+    const filtered = products.filter((product) => {
       const searchableText = normalizeText(productSearchText(product));
       const matchesCategory = selectedCategory === 'Todos' || product.category === selectedCategory;
       const matchesSearch = !normalizedSearch || searchableText.includes(normalizedSearch);
@@ -500,7 +501,19 @@ export default function ShopCatalog({ products }: { products: PerfumeProduct[] }
 
       return matchesCategory && matchesSearch && matchesFilters;
     });
-  }, [selectedCategory, searchQuery, selectedFilters]);
+
+    if (sortOption === 'price-asc') {
+      filtered.sort((a, b) => a.sizes[0].price - b.sizes[0].price);
+    } else if (sortOption === 'price-desc') {
+      filtered.sort((a, b) => b.sizes[0].price - a.sizes[0].price);
+    } else if (sortOption === 'name-asc') {
+      filtered.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortOption === 'name-desc') {
+      filtered.sort((a, b) => b.name.localeCompare(a.name));
+    }
+
+    return filtered;
+  }, [selectedCategory, searchQuery, selectedFilters, sortOption, products]);
 
   const displayedProducts = useMemo(() => {
     return filteredProducts.slice(0, visibleCount);
@@ -547,15 +560,34 @@ export default function ShopCatalog({ products }: { products: PerfumeProduct[] }
             </span>
           </div>
 
-          <div className="relative w-full md:max-w-xs border-b border-brand-dark/20 pb-1.5">
-            <input
-              type="text"
-              placeholder="Buscar por aroma, nota u ocasión..."
-              value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
-              className="w-full bg-transparent pl-8 pr-2 py-1 text-sm focus:outline-none placeholder-brand-dark/30 font-light"
-            />
-            <Search size={14} className="absolute left-1 top-1/2 -translate-y-1/2 text-brand-dark/40" />
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-6 w-full md:w-auto">
+            {/* Selector de ordenamiento */}
+            <div className="relative border-b border-brand-dark/20 pb-1.5 flex items-center gap-2">
+              <span className="text-[10px] uppercase tracking-wider text-brand-dark/45 font-semibold whitespace-nowrap">Ordenar por:</span>
+              <select
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value)}
+                className="bg-transparent border-0 text-xs font-semibold uppercase tracking-wider text-brand-dark/70 focus:ring-0 focus:outline-none pr-6 cursor-pointer"
+              >
+                <option value="recommended">Recomendados</option>
+                <option value="price-asc">Precio: menor a mayor</option>
+                <option value="price-desc">Precio: mayor a menor</option>
+                <option value="name-asc">Nombre: A-Z</option>
+                <option value="name-desc">Nombre: Z-A</option>
+              </select>
+            </div>
+
+            {/* Buscador */}
+            <div className="relative w-full md:max-w-xs border-b border-brand-dark/20 pb-1.5">
+              <input
+                type="text"
+                placeholder="Buscar por aroma, nota u ocasión..."
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                className="w-full bg-transparent pl-8 pr-2 py-1 text-sm focus:outline-none placeholder-brand-dark/30 font-light"
+              />
+              <Search size={14} className="absolute left-1 top-1/2 -translate-y-1/2 text-brand-dark/40" />
+            </div>
           </div>
         </div>
 
