@@ -109,15 +109,15 @@ export const initDb = () => {
   const testCoupon = db.prepare('SELECT code FROM coupons WHERE code = ?').get('LEDESIR10');
   if (!testCoupon) {
     db.prepare(`
-      INSERT INTO coupons (code, discount_type, discount_value, is_active)
+      INSERT INTO coupons (code, discount_type, discount_value)
       VALUES ('LEDESIR10', 'percentage', 10)
     `).run();
     db.prepare(`
-      INSERT INTO coupons (code, discount_type, discount_value, is_active)
+      INSERT INTO coupons (code, discount_type, discount_value)
       VALUES ('DESIR20', 'percentage', 20)
     `).run();
     db.prepare(`
-      INSERT INTO coupons (code, discount_type, discount_value, is_active)
+      INSERT INTO coupons (code, discount_type, discount_value)
       VALUES ('PROMO1000', 'fixed', 1000)
     `).run();
   }
