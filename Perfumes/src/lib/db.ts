@@ -95,6 +95,20 @@ export const initDb = () => {
     );
   `);
 
+  try {
+    db.exec("ALTER TABLE newsletter ADD COLUMN sync_status TEXT DEFAULT 'pending';");
+  } catch (e) {}
+  try {
+    db.exec("ALTER TABLE newsletter ADD COLUMN sync_provider TEXT DEFAULT 'none';");
+  } catch (e) {}
+  try {
+    db.exec("ALTER TABLE newsletter ADD COLUMN sync_attempts INTEGER DEFAULT 0;");
+  } catch (e) {}
+  try {
+    db.exec("ALTER TABLE newsletter ADD COLUMN last_sync_error TEXT;");
+  } catch (e) {}
+
+
   // Tabla de mensajes de contacto
   db.exec(`
     CREATE TABLE IF NOT EXISTS messages (
@@ -168,6 +182,10 @@ export const initDb = () => {
     db.prepare(`
       INSERT INTO coupons (code, discount_type, discount_value)
       VALUES ('PROMO1000', 'fixed', 1000)
+    `).run();
+    db.prepare(`
+      INSERT INTO coupons (code, discount_type, discount_value)
+      VALUES ('BIENVENIDA10', 'percentage', 10)
     `).run();
   }
 

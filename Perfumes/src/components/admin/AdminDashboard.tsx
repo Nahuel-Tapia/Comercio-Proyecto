@@ -238,7 +238,15 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
   const [stats, setStats] = useState<any>(null);
   const [coupons, setCoupons] = useState<any[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
-  const [newsletter, setNewsletter] = useState<{ id: number; email: string; created_at: string }[]>([]);
+  const [newsletter, setNewsletter] = useState<{
+    id: number;
+    email: string;
+    created_at: string;
+    sync_status?: 'pending' | 'synced' | 'failed';
+    sync_provider?: string;
+    sync_attempts?: number;
+    last_sync_error?: string;
+  }[]>([]);
   const [newsletterSearch, setNewsletterSearch] = useState('');
   const [reviewsList, setReviewsList] = useState<any[]>([]);
   const [reviewsSearch, setReviewsSearch] = useState('');
@@ -1301,6 +1309,7 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
                       <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">ID</th>
                       <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Correo Electrónico</th>
                       <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Fecha de Registro</th>
+                      <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Sincronización</th>
                       <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold text-right">Acciones</th>
                     </tr>
                   </thead>
@@ -1320,6 +1329,26 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
                             <td className="py-4 px-4 text-sm font-mono text-brand-dark/50">{sub.id}</td>
                             <td className="py-4 px-4 text-sm font-medium text-brand-dark">{sub.email}</td>
                             <td className="py-4 px-4 text-xs text-brand-dark/70 font-light">{formattedDate}</td>
+                            <td className="py-4 px-4 text-xs">
+                              {sub.sync_status === 'synced' && (
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                  Sincronizado ({sub.sync_provider})
+                                </span>
+                              )}
+                              {sub.sync_status === 'failed' && (
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800" title={sub.last_sync_error || 'Error desconocido'}>
+                                  <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                  Falló (Reintentos: {sub.sync_attempts})
+                                </span>
+                              )}
+                              {(sub.sync_status === 'pending' || !sub.sync_status) && (
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                                  Pendiente
+                                </span>
+                              )}
+                            </td>
                             <td className="py-4 px-4 text-right">
                               <button 
                                 onClick={() => handleDeleteSubscriber(sub.id)} 
@@ -1354,10 +1383,32 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
                             <span className="font-mono text-[9px] text-brand-dark/40 block mb-0.5">#{sub.id}</span>
                             <span className="text-sm font-semibold text-brand-dark break-all">{sub.email}</span>
                           </div>
+                          <div className="shrink-0">
+                            {sub.sync_status === 'synced' && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-green-100 text-green-800">
+                                ✓ {sub.sync_provider}
+                              </span>
+                            )}
+                            {sub.sync_status === 'failed' && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-red-100 text-red-800" title={sub.last_sync_error || 'Error desconocido'}>
+                                ✗ Falló ({sub.sync_attempts})
+                              </span>
+                            )}
+                            {(sub.sync_status === 'pending' || !sub.sync_status) && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-yellow-100 text-yellow-800">
+                                ⏳ Pendiente
+                              </span>
+                            )}
+                          </div>
                         </div>
                         <div className="text-[10px] text-brand-dark/50 font-light">
                           Registrado: {formattedDate}
                         </div>
+                        {sub.last_sync_error && sub.sync_status === 'failed' && (
+                          <div className="text-[9px] bg-red-50 text-red-700 p-1.5 font-mono overflow-auto max-h-12 border border-red-100 rounded">
+                            {sub.last_sync_error}
+                          </div>
+                        )}
                         <div className="pt-2 border-t border-brand-dark/5 flex justify-end">
                           <button 
                             onClick={() => handleDeleteSubscriber(sub.id)} 

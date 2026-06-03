@@ -383,3 +383,44 @@ export async function sendOrderApprovedEmail(order: any, items: any[]) {
     console.log('------------------------------------------------------------');
   }
 }
+
+export async function sendWelcomeEmail(email: string) {
+  const transporter = await getTransporter();
+
+  const clientContent = `
+    <h2>¡Gracias por suscribirte a nuestro boletín!</h2>
+    <p>Te damos la bienvenida al universo olfativo de <strong>Lé Désir</strong>.</p>
+    <p>A partir de ahora, serás el primero en enterarte de nuestros nuevos lanzamientos, colecciones limitadas y eventos exclusivos.</p>
+    
+    <div class="highlight-box" style="text-align: center; border: 1.5px dashed #C5A880; background-color: #FCFAF7; padding: 25px; margin: 30px 0;">
+      <p style="font-size: 11px; uppercase tracking-widest text-brand-dark/50 margin-bottom: 5px;">Tu obsequio de bienvenida</p>
+      <h3 style="font-family: Georgia, serif; font-size: 28px; color: #111111; margin: 0 0 10px 0; letter-spacing: 2px;">10% OFF</h3>
+      <p style="font-size: 13px; color: #555555; margin-bottom: 15px;">Utilizá el siguiente código en el checkout de tu próxima compra:</p>
+      <code style="display: inline-block; font-size: 18px; font-weight: bold; background-color: #111111; color: #C5A880; padding: 10px 20px; border-radius: 2px; letter-spacing: 2px;">BIENVENIDA10</code>
+    </div>
+
+    <p style="font-size: 13px; color: #555555; line-height: 1.6;">
+      Nuestras fragancias son concebidas bajo la filosofía del minimalismo olfativo, creadas con esencias selectas para perdurar y expresar tu estilo único.
+    </p>
+
+    <div style="text-align: center; margin-top: 30px;">
+      <a href="http://localhost:4321/shop" class="button">Explorar Catálogo</a>
+    </div>
+  `;
+
+  const welcomeMailOptions = {
+    from: '"Lé Désir Fragancias" <no-reply@ledesirfragancias.com>',
+    to: email,
+    subject: 'Bienvenido a Lé Désir | 10% de descuento de bienvenida',
+    html: getLuxuryEmailWrapper('Bienvenido a Lé Désir', clientContent),
+  };
+
+  const info = await transporter.sendMail(welcomeMailOptions);
+
+  if (transporter.options.host === 'smtp.ethereal.email') {
+    console.log('------------------------------------------------------------');
+    console.log(`📧 [MOCK EMAIL BIENVENIDA] Vista previa: ${nodemailer.getTestMessageUrl(info)}`);
+    console.log('------------------------------------------------------------');
+  }
+}
+
