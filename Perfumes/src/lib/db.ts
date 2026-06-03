@@ -120,6 +120,20 @@ export const initDb = () => {
     );
   `);
 
+  // Tabla de reseñas de productos
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS reviews (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      product_id TEXT NOT NULL,
+      client_name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),
+      comment TEXT NOT NULL,
+      is_approved INTEGER DEFAULT 0,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
   // Crear cupones por defecto
   const testCoupon = db.prepare('SELECT code FROM coupons WHERE code = ?').get('LEDESIR10');
   if (!testCoupon) {
@@ -141,6 +155,8 @@ export const initDb = () => {
   db.exec('CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);');
   db.exec('CREATE INDEX IF NOT EXISTS idx_products_family ON products(family);');
   db.exec('CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at);');
+  db.exec('CREATE INDEX IF NOT EXISTS idx_reviews_product_id ON reviews(product_id);');
+  db.exec('CREATE INDEX IF NOT EXISTS idx_reviews_is_approved ON reviews(is_approved);');
 
   // Poblar productos si la tabla está vacía
   const productCount = db.prepare('SELECT COUNT(*) as count FROM products').get() as { count: number };

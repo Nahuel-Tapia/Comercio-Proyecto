@@ -232,7 +232,7 @@ function ProductFormModal({
 }
 
 export default function AdminDashboard({ initialProducts }: { initialProducts: PerfumeProduct[] }) {
-  const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'stats' | 'coupons' | 'messages' | 'newsletter'>('products');
+  const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'stats' | 'coupons' | 'messages' | 'newsletter' | 'reviews'>('products');
   const [products, setProducts] = useState<PerfumeProduct[]>(initialProducts);
   const [orders, setOrders] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
@@ -240,6 +240,8 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
   const [messages, setMessages] = useState<any[]>([]);
   const [newsletter, setNewsletter] = useState<{ id: number; email: string; created_at: string }[]>([]);
   const [newsletterSearch, setNewsletterSearch] = useState('');
+  const [reviewsList, setReviewsList] = useState<any[]>([]);
+  const [reviewsSearch, setReviewsSearch] = useState('');
   const [newCoupon, setNewCoupon] = useState({
     code: '',
     discount_type: 'percentage',
@@ -280,12 +282,18 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
     if (res.ok) setNewsletter(await res.json());
   };
 
+  const fetchReviewsList = async () => {
+    const res = await fetch('/api/admin/reviews');
+    if (res.ok) setReviewsList(await res.json());
+  };
+
   useEffect(() => {
     if (activeTab === 'orders') fetchOrders();
     if (activeTab === 'stats') fetchStats();
     if (activeTab === 'coupons') fetchCoupons();
     if (activeTab === 'messages') fetchMessages();
     if (activeTab === 'newsletter') fetchNewsletter();
+    if (activeTab === 'reviews') fetchReviewsList();
   }, [activeTab]);
 
   const handleCreateCoupon = async (e: React.FormEvent) => {
@@ -435,6 +443,49 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
       });
   };
 
+  const handleToggleReview = async (id: number, currentApproved: boolean) => {
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/admin/reviews', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, is_approved: !currentApproved })
+      });
+      if (res.ok) {
+        await fetchReviewsList();
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', message: `Reseña ${!currentApproved ? 'aprobada' : 'ocultada'} con éxito` }}));
+      } else {
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error al cambiar estado de reseña' }}));
+      }
+    } catch (err) {
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error de servidor' }}));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeleteReview = async (id: number) => {
+    if (!confirm('¿Estás seguro de que deseas eliminar esta reseña?')) return;
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/admin/reviews', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      if (res.ok) {
+        await fetchReviewsList();
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', message: 'Reseña eliminada' }}));
+      } else {
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error al eliminar reseña' }}));
+      }
+    } catch (err) {
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error de servidor' }}));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSaveProduct = async (prod: Partial<PerfumeProduct>, file?: File) => {
     setIsLoading(true);
     try {
@@ -549,6 +600,12 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
             className={`uppercase tracking-widest text-xs font-semibold px-4 py-2.5 md:px-6 md:py-3 transition-colors ${activeTab === 'newsletter' ? 'bg-brand-dark text-brand-white' : 'text-brand-dark/60 hover:text-brand-dark'}`}
           >
             Boletín
+          </button>
+          <button 
+            onClick={() => setActiveTab('reviews')} 
+            className={`uppercase tracking-widest text-xs font-semibold px-4 py-2.5 md:px-6 md:py-3 transition-colors ${activeTab === 'reviews' ? 'bg-brand-dark text-brand-white' : 'text-brand-dark/60 hover:text-brand-dark'}`}
+          >
+            Reseñas
           </button>
         </div>
       </div>
@@ -1265,6 +1322,160 @@ export default function AdminDashboard({ initialProducts }: { initialProducts: P
                       </div>
                     );
                   })}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'reviews' && (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xs uppercase tracking-widest text-brand-dark/80 font-semibold flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-brand-gold"></span>
+              Moderación de Reseñas de Clientes
+            </h3>
+            <span className="text-[10px] uppercase tracking-widest bg-brand-gold-light/45 px-3 py-1 font-semibold text-brand-gold">
+              {reviewsList.length} {reviewsList.length === 1 ? 'Reseña' : 'Reseñas'}
+            </span>
+          </div>
+
+          <div className="mb-6">
+            <input 
+              type="text" 
+              value={reviewsSearch} 
+              onChange={e => setReviewsSearch(e.target.value)} 
+              placeholder="Buscar por cliente, correo o comentario..." 
+              className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2.5 text-brand-dark focus:outline-none focus:border-brand-gold text-sm"
+            />
+          </div>
+
+          {reviewsList.filter(r => 
+            r.client_name.toLowerCase().includes(reviewsSearch.toLowerCase()) || 
+            r.email.toLowerCase().includes(reviewsSearch.toLowerCase()) || 
+            r.comment.toLowerCase().includes(reviewsSearch.toLowerCase())
+          ).length === 0 ? (
+            <p className="text-center py-12 text-brand-dark/50 font-light">No hay reseñas que coincidan con la búsqueda.</p>
+          ) : (
+            <>
+              {/* Desktop View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-brand-dark/10 bg-brand-light">
+                      <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Producto</th>
+                      <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Cliente</th>
+                      <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Calificación</th>
+                      <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Comentario</th>
+                      <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold">Estado</th>
+                      <th className="py-4 px-4 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold text-right">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-brand-dark/5">
+                    {reviewsList
+                      .filter(r => 
+                        r.client_name.toLowerCase().includes(reviewsSearch.toLowerCase()) || 
+                        r.email.toLowerCase().includes(reviewsSearch.toLowerCase()) || 
+                        r.comment.toLowerCase().includes(reviewsSearch.toLowerCase())
+                      )
+                      .map((review) => (
+                        <tr key={review.id} className="hover:bg-brand-light/50 transition-colors">
+                          <td className="py-4 px-4">
+                            <div className="flex items-center gap-2 max-w-[150px]">
+                              {review.product_image && (
+                                <img src={review.product_image} alt={review.product_name} className="w-8 h-8 object-cover bg-brand-gold-light" />
+                              )}
+                              <span className="text-xs font-semibold text-brand-dark truncate">{review.product_name || review.product_id}</span>
+                            </div>
+                          </td>
+                          <td className="py-4 px-4">
+                            <p className="font-serif text-sm text-brand-dark">{review.client_name}</p>
+                            <p className="text-[10px] text-brand-dark/50">{review.email}</p>
+                          </td>
+                          <td className="py-4 px-4">
+                            <div className="flex text-brand-gold text-sm">
+                              {Array.from({ length: 5 }).map((_, i) => (
+                                <span key={i}>{i < review.rating ? '★' : '☆'}</span>
+                              ))}
+                            </div>
+                          </td>
+                          <td className="py-4 px-4 text-xs text-brand-dark/80 max-w-[250px] truncate" title={review.comment}>
+                            {review.comment}
+                          </td>
+                          <td className="py-4 px-4">
+                            <span className={`text-[9px] uppercase tracking-wider font-semibold px-2 py-0.5 border ${review.is_approved ? 'bg-green-50 text-green-700 border-green-200' : 'bg-yellow-50 text-yellow-700 border-yellow-200'}`}>
+                              {review.is_approved ? 'Aprobada' : 'Pendiente'}
+                            </span>
+                          </td>
+                          <td className="py-4 px-4 text-right">
+                            <button 
+                              onClick={() => handleToggleReview(review.id, !!review.is_approved)} 
+                              className="text-xs uppercase tracking-widest text-brand-gold font-semibold hover:text-brand-dark transition-colors mr-4"
+                            >
+                              {review.is_approved ? 'Ocultar' : 'Aprobar'}
+                            </button>
+                            <button 
+                              onClick={() => handleDeleteReview(review.id)} 
+                              className="text-xs uppercase tracking-widest text-red-400 font-semibold hover:text-red-600 transition-colors"
+                            >
+                              Eliminar
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile View */}
+              <div className="md:hidden space-y-4">
+                {reviewsList
+                  .filter(r => 
+                    r.client_name.toLowerCase().includes(reviewsSearch.toLowerCase()) || 
+                    r.email.toLowerCase().includes(reviewsSearch.toLowerCase()) || 
+                    r.comment.toLowerCase().includes(reviewsSearch.toLowerCase())
+                  )
+                  .map((review) => (
+                    <div key={review.id} className="bg-brand-light/30 border border-brand-dark/10 p-4 space-y-3">
+                      <div className="flex justify-between items-start gap-4">
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            {review.product_image && (
+                              <img src={review.product_image} alt={review.product_name} className="w-6 h-6 object-cover bg-brand-gold-light" />
+                            )}
+                            <span className="text-[10px] font-bold text-brand-dark uppercase tracking-wider truncate max-w-[150px]">{review.product_name || review.product_id}</span>
+                          </div>
+                          <span className="font-serif font-semibold text-brand-dark block">{review.client_name}</span>
+                          <span className="text-[9px] text-brand-dark/40 block">{review.email}</span>
+                        </div>
+                        <span className={`text-[9px] uppercase tracking-wider font-semibold px-2 py-0.5 border ${review.is_approved ? 'bg-green-50 text-green-700 border-green-200' : 'bg-yellow-50 text-yellow-700 border-yellow-200'}`}>
+                          {review.is_approved ? 'Aprobada' : 'Pendiente'}
+                        </span>
+                      </div>
+                      <div className="flex text-brand-gold text-xs">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <span key={i}>{i < review.rating ? '★' : '☆'}</span>
+                        ))}
+                      </div>
+                      <p className="text-xs text-brand-dark/70 font-light italic bg-brand-white/40 p-2 border-l border-brand-gold font-serif">
+                        "{review.comment}"
+                      </p>
+                      <div className="pt-2 border-t border-brand-dark/5 flex justify-end gap-3">
+                        <button 
+                          onClick={() => handleToggleReview(review.id, !!review.is_approved)} 
+                          className="py-1 text-[10px] uppercase tracking-widest text-brand-gold font-semibold"
+                        >
+                          {review.is_approved ? 'Ocultar' : 'Aprobar'}
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteReview(review.id)} 
+                          className="py-1 text-[10px] uppercase tracking-widest text-red-600 font-semibold"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </div>
+                  ))}
               </div>
             </>
           )}
