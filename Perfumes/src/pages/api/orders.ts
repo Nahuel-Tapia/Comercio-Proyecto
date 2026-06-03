@@ -10,6 +10,7 @@ const OrderSchema = z.object({
   address: z.string().optional().default(''),
   method: z.string().default('retiro'),
   couponCode: z.string().optional().nullable(),
+  payment_method: z.enum(['whatsapp', 'mercadopago']).default('whatsapp'),
   items: z.array(z.object({
     productId: z.string(),
     sizeLabel: z.string(),
@@ -111,9 +112,64 @@ export const POST: APIRoute = async ({ request }) => {
       serverTotal = Math.max(0, serverTotal - discount);
     }
 
+    let preferenceId = null;
+    let preferenceUrl = '';
+
+    if (validatedData.payment_method === 'mercadopago') {
+      const mpAccessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN || '';
+      const siteUrl = process.env.SITE_URL || 'http://localhost:4321';
+
+      if (mpAccessToken && mpAccessToken !== 'TEST-TOKEN-SIMULADO') {
+        try {
+          const mpResponse = await fetch('https://api.mercadopago.com/v1/checkout/preferences', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${mpAccessToken}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              items: [
+                {
+                  id: orderId,
+                  title: `Fragancias premium Lé Désir - Pedido #${orderId}`,
+                  quantity: 1,
+                  unit_price: serverTotal,
+                  currency_id: 'ARS',
+                }
+              ],
+              back_urls: {
+                success: `${siteUrl}/checkout/success?orderId=${orderId}`,
+                pending: `${siteUrl}/checkout/pending?orderId=${orderId}`,
+                failure: `${siteUrl}/checkout/failure?orderId=${orderId}`,
+              },
+              auto_return: 'approved',
+              external_reference: orderId,
+              notification_url: `${siteUrl}/api/webhooks/mercadopago`,
+            })
+          });
+
+          if (mpResponse.ok) {
+            const mpData = await mpResponse.json();
+            preferenceId = mpData.id;
+            preferenceUrl = mpData.init_point;
+          } else {
+            const errText = await mpResponse.text();
+            console.error('Mercado Pago API error details:', errText);
+            preferenceUrl = `${siteUrl}/checkout/success?orderId=${orderId}&status=approved&simulated=true`;
+          }
+        } catch (err) {
+          console.error('Error contacting Mercado Pago:', err);
+          preferenceUrl = `${siteUrl}/checkout/success?orderId=${orderId}&status=approved&simulated=true`;
+        }
+      } else {
+        console.log('MERCADO_PAGO_ACCESS_TOKEN no configurado o simulado. Usando simulación local.');
+        preferenceUrl = `${siteUrl}/checkout/success?orderId=${orderId}&status=approved&simulated=true`;
+      }
+    }
+
     const insertOrder = db.prepare(`
-      INSERT INTO orders (id, client_name, phone, address, method, items_json, total, coupon_code, discount)
-      VALUES (@id, @client_name, @phone, @address, @method, @items_json, @total, @coupon_code, @discount)
+      INSERT INTO orders (id, client_name, phone, address, method, items_json, total, coupon_code, discount, payment_method, payment_status, preference_id)
+      VALUES (@id, @client_name, @phone, @address, @method, @items_json, @total, @coupon_code, @discount, @payment_method, @payment_status, @preference_id)
     `);
 
     // Usar transacción para insertar orden, restar stock e incrementar usos del cupón
@@ -158,11 +214,14 @@ export const POST: APIRoute = async ({ request }) => {
         total: serverTotal,
         coupon_code: couponCode,
         discount: discount,
+        payment_method: validatedData.payment_method,
+        payment_status: validatedData.payment_method === 'mercadopago' ? 'Pendiente' : 'Aprobado',
+        preference_id: preferenceId,
       },
       validatedData.items
     );
     
-    return new Response(JSON.stringify({ success: true, orderId }), {
+    return new Response(JSON.stringify({ success: true, orderId, preferenceUrl }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

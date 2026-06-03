@@ -36,6 +36,7 @@ export default function SlideCart({
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [shippingMethod, setShippingMethod] = useState<'envio' | 'takeaway'>('takeaway');
+  const [paymentMethod, setPaymentMethod] = useState<'whatsapp' | 'mercadopago'>('whatsapp');
   
   // Coupon states
   const [couponInput, setCouponInput] = useState('');
@@ -99,45 +100,58 @@ export default function SlideCart({
           phone,
           address: shippingMethod === 'envio' ? address : '',
           method: shippingMethod,
-          items: cartItems,
+          payment_method: paymentMethod,
+          items: cartItems.map(item => ({
+            productId: item.productId,
+            sizeLabel: item.sizeLabel,
+            quantity: item.quantity
+          })),
           total: finalTotal,
           couponCode: appliedCoupon?.code || null
         })
       });
 
+      const data = await res.json();
+
       if (!res.ok) {
-        throw new Error('Error al enviar la orden');
+        throw new Error(data.error || 'Error al enviar la orden');
       }
 
-      const orderTitle = `*Nuevo pedido - ${SITE.brandFull}*\n\n`;
-      const clientDetails = `*Cliente:* ${name}\n*Teléfono:* ${phone || 'No especificado'}\n*Método:* ${
-        shippingMethod === 'envio' ? 'Envío a domicilio' : SITE.pickupLabel
-      }\n${shippingMethod === 'envio' ? `*Dirección:* ${address}\n` : ''}\n`;
-      const itemsHeader = '*Productos:*\n';
-      const itemsList = cartItems
-        .map(
-          (item) =>
-            `- ${item.quantity}x ${item.name} (${item.category}) - $${(
-              item.price * item.quantity
-            ).toLocaleString('es-AR')}`
-        )
-        .join('\n');
-      const shippingLine = shippingMethod === 'envio' ? `\n*Envío:* $${SHIPPING_COST.toLocaleString('es-AR')}` : '';
-      const couponLine = appliedCoupon ? `\n*Cupón aplicado:* ${appliedCoupon.code} (-$${discountAmount.toLocaleString('es-AR')})` : '';
-      const totalFooter = `\n${shippingLine}${couponLine}\n*Total estimado: $${finalTotal.toLocaleString('es-AR')}*`;
-      const note = '\n\nQuedo atento/a para coordinar pago, disponibilidad y entrega.';
-      const fullMessage = encodeURIComponent(orderTitle + clientDetails + itemsHeader + itemsList + totalFooter + note);
+      if (paymentMethod === 'mercadopago' && data.preferenceUrl) {
+        // Redirigir a Mercado Pago para realizar el pago
+        window.location.href = data.preferenceUrl;
+      } else {
+        // Si es WhatsApp, abrir el chat coordinando entrega
+        const orderTitle = `*Nuevo pedido - ${SITE.brandFull}*\n\n`;
+        const clientDetails = `*Cliente:* ${name}\n*Teléfono:* ${phone || 'No especificado'}\n*Método:* ${
+          shippingMethod === 'envio' ? 'Envío a domicilio' : SITE.pickupLabel
+        }\n${shippingMethod === 'envio' ? `*Dirección:* ${address}\n` : ''}\n`;
+        const itemsHeader = '*Productos:*\n';
+        const itemsList = cartItems
+          .map(
+            (item) =>
+              `- ${item.quantity}x ${item.name} (${item.category}) - $${(
+                item.price * item.quantity
+              ).toLocaleString('es-AR')}`
+          )
+          .join('\n');
+        const shippingLine = shippingMethod === 'envio' ? `\n*Envío:* $${SHIPPING_COST.toLocaleString('es-AR')}` : '';
+        const couponLine = appliedCoupon ? `\n*Cupón aplicado:* ${appliedCoupon.code} (-$${discountAmount.toLocaleString('es-AR')})` : '';
+        const totalFooter = `\n${shippingLine}${couponLine}\n*Total estimado: $${finalTotal.toLocaleString('es-AR')}*`;
+        const note = '\n\nQuedo atento/a para coordinar pago, disponibilidad y entrega.';
+        const fullMessage = encodeURIComponent(orderTitle + clientDetails + itemsHeader + itemsList + totalFooter + note);
 
-      window.open(`https://wa.me/${SITE.whatsappNumber}?text=${fullMessage}`, '_blank', 'noopener,noreferrer');
+        window.open(`https://wa.me/${SITE.whatsappNumber}?text=${fullMessage}`, '_blank', 'noopener,noreferrer');
+      }
 
       onClearCart();
       setAppliedCoupon(null);
       setCouponInput('');
       setIsCheckoutOpen(false);
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error al registrar la orden", error);
-      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Hubo un error al procesar tu pedido. Intenta nuevamente.' }}));
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: error.message || 'Hubo un error al procesar tu pedido. Intenta nuevamente.' }}));
     }
   };
 
@@ -253,6 +267,36 @@ export default function SlideCart({
                       </div>
                     </div>
 
+                    <div>
+                      <label className="block text-xs uppercase tracking-widest text-brand-dark/60 mb-2 font-medium">
+                        Método de pago
+                      </label>
+                      <div className="grid grid-cols-2 gap-2 mt-1">
+                        <button
+                          type="button"
+                          onClick={() => setPaymentMethod('whatsapp')}
+                          className={`py-3 text-[10px] sm:text-xs uppercase tracking-widest border transition-all duration-300 font-medium ${
+                            paymentMethod === 'whatsapp'
+                              ? 'border-brand-dark bg-brand-dark text-brand-white'
+                              : 'border-brand-dark/10 hover:border-brand-dark/30 text-brand-dark/55 bg-transparent'
+                          }`}
+                        >
+                          Coordinar WhatsApp
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPaymentMethod('mercadopago')}
+                          className={`py-3 text-[10px] sm:text-xs uppercase tracking-widest border transition-all duration-300 font-medium ${
+                            paymentMethod === 'mercadopago'
+                              ? 'border-brand-dark bg-brand-dark text-brand-white'
+                              : 'border-brand-dark/10 hover:border-brand-dark/30 text-brand-dark/55 bg-transparent'
+                          }`}
+                        >
+                          Mercado Pago
+                        </button>
+                      </div>
+                    </div>
+
                     {shippingMethod === 'envio' && (
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
@@ -320,7 +364,7 @@ export default function SlideCart({
                       type="submit"
                       className="w-full bg-brand-dark text-brand-white py-4 uppercase tracking-widest text-xs font-semibold hover:bg-brand-gold transition-colors duration-300 shadow-xs"
                     >
-                      Confirmar pedido por WhatsApp
+                      {paymentMethod === 'mercadopago' ? 'Pagar con Mercado Pago' : 'Confirmar pedido por WhatsApp'}
                     </button>
                   </form>
                 </div>

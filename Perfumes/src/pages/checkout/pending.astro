@@ -1,0 +1,49 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { SITE } from '../../data/site';
+
+const orderId = Astro.url.searchParams.get('orderId');
+const whatsappMessage = orderId
+  ? `Hola! Mi pago para el pedido #${orderId} está pendiente de confirmación en la web. ¿Me confirmarías si ingresó correctamente?`
+  : 'Hola, tengo una consulta sobre mi pedido.';
+const whatsappUrl = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+---
+
+<Layout title="Pago Pendiente | Lé Désir" description="Tu pago está pendiente de aprobación en Lé Désir.">
+  <main class="bg-brand-light min-h-screen pt-40 pb-32 flex items-center">
+    <div class="container mx-auto px-4 md:px-8 max-w-md">
+      <div class="bg-brand-white border border-brand-dark/5 p-8 md:p-12 shadow-md rounded-xs text-center space-y-6 animate-fade-in">
+        <div class="w-16 h-16 bg-yellow-50 border border-yellow-200 text-yellow-600 rounded-full flex items-center justify-center mx-auto">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+        </div>
+
+        <div class="space-y-2">
+          <span class="text-xs uppercase tracking-widest text-brand-gold font-semibold">El pago está en proceso</span>
+          <h1 class="font-serif text-2xl md:text-3xl text-brand-dark lowercase">pago pendiente</h1>
+          <p class="text-sm text-brand-dark/55 font-light leading-relaxed">
+            Mercado Pago está procesando tu transacción {orderId && ` #${orderId}`}. Esto suele tardar unos minutos en acreditarse.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-2 pt-4">
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bg-brand-dark text-brand-white py-4 uppercase tracking-widest text-xs font-semibold hover:bg-brand-gold transition-colors shadow-xs inline-flex items-center justify-center gap-2"
+          >
+            Preguntar por WhatsApp
+          </a>
+          <a
+            href="/shop"
+            class="border border-brand-dark/10 hover:border-brand-dark/30 text-brand-dark/65 py-4 uppercase tracking-widest text-xs font-semibold bg-transparent transition-colors"
+          >
+            Volver a la tienda
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

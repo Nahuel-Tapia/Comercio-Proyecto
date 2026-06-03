@@ -70,6 +70,18 @@ export const initDb = () => {
   try {
     db.exec('ALTER TABLE orders ADD COLUMN discount REAL DEFAULT 0;');
   } catch (e) {}
+  try {
+    db.exec("ALTER TABLE orders ADD COLUMN payment_method TEXT DEFAULT 'whatsapp';");
+  } catch (e) {}
+  try {
+    db.exec("ALTER TABLE orders ADD COLUMN payment_status TEXT DEFAULT 'Pendiente';");
+  } catch (e) {}
+  try {
+    db.exec("ALTER TABLE orders ADD COLUMN payment_id TEXT;");
+  } catch (e) {}
+  try {
+    db.exec("ALTER TABLE orders ADD COLUMN preference_id TEXT;");
+  } catch (e) {}
 
   // Tabla de newsletters
   db.exec(`
