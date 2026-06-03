@@ -1,0 +1,96 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ProductDetails from '../../components/sections/ProductDetails';
+import db from '../../lib/db';
+
+const { id } = Astro.params;
+
+// Buscar el producto en la base de datos
+const row = db.prepare('SELECT * FROM products WHERE id = ?').get(id) as any;
+
+if (!row) {
+  return Astro.redirect('/shop');
+}
+
+const product = {
+  id: row.id,
+  name: row.name,
+  category: row.category,
+  image: row.image,
+  description: row.description,
+  family: row.family,
+  concentration: row.concentration,
+  intensity: row.intensity,
+  longevity: row.longevity,
+  sillage: row.sillage,
+  recommendation: row.recommendation,
+  sizes: JSON.parse(row.sizes_json),
+  bestFor: JSON.parse(row.bestFor_json),
+  seasons: JSON.parse(row.seasons_json),
+  tags: JSON.parse(row.tags_json),
+  notes: JSON.parse(row.notes_json),
+};
+
+// Obtener 3 productos relacionados
+const relatedRows = db.prepare(
+  'SELECT * FROM products WHERE id != ? AND (category = ? OR family = ?) LIMIT 3'
+).all(product.id, product.category, product.family) as any[];
+
+const relatedProducts = relatedRows.map((r) => ({
+  id: r.id,
+  name: r.name,
+  category: r.category,
+  image: r.image,
+  description: r.description,
+  family: r.family,
+  concentration: r.concentration,
+  intensity: r.intensity,
+  longevity: r.longevity,
+  sillage: r.sillage,
+  recommendation: r.recommendation,
+  sizes: JSON.parse(r.sizes_json),
+  bestFor: JSON.parse(r.bestFor_json),
+  seasons: JSON.parse(r.seasons_json),
+  tags: JSON.parse(r.tags_json),
+  notes: JSON.parse(r.notes_json),
+}));
+---
+
+<Layout 
+  title={`${product.name} | Lé Désir`} 
+  description={product.description}
+>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify({
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": product.name,
+    "image": [
+      product.image.startsWith('http') ? product.image : `https://ledesir.com${product.image}`
+    ],
+    "description": product.description,
+    "sku": product.id,
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "ARS",
+      "lowPrice": Math.min(...product.sizes.map((s: any) => s.price)),
+      "highPrice": Math.max(...product.sizes.map((s: any) => s.price)),
+      "offerCount": product.sizes.length,
+      "availability": "https://schema.org/InStock"
+    }
+  })} />
+
+  <main class="bg-brand-light min-h-screen pt-40 pb-32">
+    <div class="container mx-auto px-4 md:px-8 max-w-5xl">
+      <div class="mb-8">
+        <a 
+          href="/shop" 
+          class="text-xs uppercase tracking-widest text-brand-dark/50 hover:text-brand-dark transition-colors inline-flex items-center gap-2"
+        >
+          ← Volver al catálogo
+        </a>
+      </div>
+      
+      <ProductDetails product={product} relatedProducts={relatedProducts} client:load />
+    </div>
+  </main>
+</Layout>

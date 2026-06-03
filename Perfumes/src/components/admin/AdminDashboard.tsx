@@ -15,6 +15,12 @@ function ProductFormModal({
     category: product.category || 'Unisex',
     family: product.family || '',
     image: product.image || '',
+    description: product.description || '',
+    concentration: product.concentration || '',
+    recommendation: product.recommendation || '',
+    intensity: product.intensity || 'Media',
+    longevity: product.longevity || '',
+    sillage: product.sillage || '',
     sizes: product.sizes?.map(s => ({
       label: s.label,
       price: s.price,
@@ -28,7 +34,15 @@ function ProductFormModal({
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  // States for comma-separated fields
+  const [topNotesStr, setTopNotesStr] = useState(product.notes?.top?.join(', ') || '');
+  const [heartNotesStr, setHeartNotesStr] = useState(product.notes?.heart?.join(', ') || '');
+  const [baseNotesStr, setBaseNotesStr] = useState(product.notes?.base?.join(', ') || '');
+  const [bestForStr, setBestForStr] = useState(product.bestFor?.join(', ') || '');
+  const [seasonsStr, setSeasonsStr] = useState(product.seasons?.join(', ') || '');
+  const [tagsStr, setTagsStr] = useState(product.tags?.join(', ') || '');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
@@ -51,40 +65,142 @@ function ProductFormModal({
     }
   };
 
+  const handleSave = () => {
+    const finalProduct = {
+      ...formData,
+      notes: {
+        top: topNotesStr.split(',').map(s => s.trim()).filter(Boolean),
+        heart: heartNotesStr.split(',').map(s => s.trim()).filter(Boolean),
+        base: baseNotesStr.split(',').map(s => s.trim()).filter(Boolean),
+      },
+      bestFor: bestForStr.split(',').map(s => s.trim()).filter(Boolean),
+      seasons: seasonsStr.split(',').map(s => s.trim()).filter(Boolean),
+      tags: tagsStr.split(',').map(s => s.trim()).filter(Boolean),
+    };
+    onSave(finalProduct, imageFile || undefined);
+  };
+
   return (
     <div className="fixed inset-0 bg-brand-dark/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-brand-white max-w-2xl w-full p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <div className="bg-brand-white max-w-3xl w-full p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
         <button onClick={onClose} className="absolute top-6 right-6 text-brand-dark/50 hover:text-brand-dark text-xl">✕</button>
         <h2 className="font-serif text-3xl text-brand-dark mb-6">{product.id ? 'Editar Fragancia' : 'Nueva Fragancia'}</h2>
         
         <div className="space-y-6">
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Nombre</label>
-              <input name="name" value={formData.name} onChange={handleChange} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" />
+          {/* Section: Información General */}
+          <div className="border-b border-brand-dark/10 pb-4">
+            <h3 className="text-xs uppercase tracking-widest text-brand-dark/80 font-semibold mb-4">Información General</h3>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Nombre</label>
+                <input name="name" value={formData.name} onChange={handleChange} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Categoría</label>
+                <select name="category" value={formData.category} onChange={handleChange} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold">
+                  <option value="Para Mujer">Para Mujer</option>
+                  <option value="Para Hombre">Para Hombre</option>
+                  <option value="Unisex">Unisex</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Familia Olfativa</label>
+                <input name="family" value={formData.family} onChange={handleChange} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Concentración</label>
+                <input name="concentration" value={formData.concentration} onChange={handleChange} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" placeholder="Ej: Eau de Parfum" />
+              </div>
+            </div>
+            <div className="mb-4">
+              <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Descripción</label>
+              <textarea name="description" value={formData.description} onChange={handleChange} rows={3} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" />
             </div>
             <div>
-              <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Categoría</label>
-              <select name="category" value={formData.category} onChange={handleChange} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold">
-                <option value="Para Mujer">Para Mujer</option>
-                <option value="Para Hombre">Para Hombre</option>
-                <option value="Unisex">Unisex</option>
-              </select>
+              <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Recomendación de Uso</label>
+              <textarea name="recommendation" value={formData.recommendation} onChange={handleChange} rows={2} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Familia Olfativa</label>
-              <input name="family" value={formData.family} onChange={handleChange} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" />
-            </div>
-            <div>
-              <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Imagen Local</label>
-              <input type="file" accept="image/*" onChange={handleFileChange} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-1.5 text-xs text-brand-dark focus:outline-none focus:border-brand-gold file:mr-4 file:py-1 file:px-4 file:border-0 file:text-xs file:uppercase file:tracking-widest file:bg-brand-dark file:text-brand-white file:cursor-pointer hover:file:bg-brand-gold" />
+          {/* Section: Características */}
+          <div className="border-b border-brand-dark/10 pb-4">
+            <h3 className="text-xs uppercase tracking-widest text-brand-dark/80 font-semibold mb-4">Características</h3>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Intensidad</label>
+                <select name="intensity" value={formData.intensity} onChange={handleChange} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold">
+                  <option value="Suave">Suave</option>
+                  <option value="Media">Media</option>
+                  <option value="Intensa">Intensa</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Duración (Longevidad)</label>
+                <input name="longevity" value={formData.longevity} onChange={handleChange} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" placeholder="Ej: 8 a 10 horas" />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Estela (Sillage)</label>
+                <input name="sillage" value={formData.sillage} onChange={handleChange} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" placeholder="Ej: Moderada" />
+              </div>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-brand-dark/10">
+          {/* Section: Notas Olfativas */}
+          <div className="border-b border-brand-dark/10 pb-4">
+            <h3 className="text-xs uppercase tracking-widest text-brand-dark/80 font-semibold mb-4">Notas Olfativas (separadas por comas)</h3>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Notas de Salida</label>
+                <input value={topNotesStr} onChange={e => setTopNotesStr(e.target.value)} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" placeholder="Pimienta rosa, Café" />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Notas de Corazón</label>
+                <input value={heartNotesStr} onChange={e => setHeartNotesStr(e.target.value)} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" placeholder="Jazmín, Azahar" />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Notas de Fondo</label>
+                <input value={baseNotesStr} onChange={e => setBaseNotesStr(e.target.value)} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" placeholder="Vainilla, Pachulí" />
+              </div>
+            </div>
+          </div>
+
+          {/* Section: Etiquetas y Temporada */}
+          <div className="border-b border-brand-dark/10 pb-4">
+            <h3 className="text-xs uppercase tracking-widest text-brand-dark/80 font-semibold mb-4">Uso, Temporadas y Etiquetas (separados por comas)</h3>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Mejor Para</label>
+                <input value={bestForStr} onChange={e => setBestForStr(e.target.value)} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" placeholder="Noche, Cita" />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Temporadas</label>
+                <input value={seasonsStr} onChange={e => setSeasonsStr(e.target.value)} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" placeholder="Otoño, Invierno" />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Etiquetas</label>
+                <input value={tagsStr} onChange={e => setTagsStr(e.target.value)} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" placeholder="Dulce, Sensual" />
+              </div>
+            </div>
+          </div>
+
+          {/* Imagen e Imagen local */}
+          <div className="border-b border-brand-dark/10 pb-4">
+            <h3 className="text-xs uppercase tracking-widest text-brand-dark/80 font-semibold mb-4">Imagen del Producto</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">URL de Imagen Existente</label>
+                <input name="image" value={formData.image} onChange={handleChange} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-2 text-brand-dark focus:outline-none focus:border-brand-gold" placeholder="https://..." />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-brand-dark/60 font-semibold mb-2">Subir Nueva Imagen</label>
+                <input type="file" accept="image/*" onChange={handleFileChange} className="w-full bg-brand-light border border-brand-dark/10 px-4 py-1.5 text-xs text-brand-dark focus:outline-none focus:border-brand-gold file:mr-4 file:py-1 file:px-4 file:border-0 file:text-xs file:uppercase file:tracking-widest file:bg-brand-dark file:text-brand-white file:cursor-pointer hover:file:bg-brand-gold" />
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-4">
             <h3 className="text-xs uppercase tracking-widest text-brand-dark/80 font-semibold mb-4">Precios y Stock de Variantes</h3>
             <div className="space-y-4">
               {formData.sizes?.map((size, idx) => (
@@ -107,7 +223,7 @@ function ProductFormModal({
 
           <div className="pt-8 flex justify-end gap-4">
             <button onClick={onClose} className="px-6 py-2 text-xs uppercase tracking-widest text-brand-dark/60 font-semibold hover:text-brand-dark">Cancelar</button>
-            <button onClick={() => onSave(formData, imageFile || undefined)} className="px-8 py-2 bg-brand-dark text-brand-white text-xs uppercase tracking-widest font-semibold hover:bg-brand-gold transition-colors">Guardar</button>
+            <button onClick={handleSave} className="px-8 py-2 bg-brand-dark text-brand-white text-xs uppercase tracking-widest font-semibold hover:bg-brand-gold transition-colors">Guardar</button>
           </div>
         </div>
       </div>

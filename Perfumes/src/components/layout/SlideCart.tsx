@@ -36,10 +36,55 @@ export default function SlideCart({
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [shippingMethod, setShippingMethod] = useState<'envio' | 'takeaway'>('takeaway');
+  
+  // Coupon states
+  const [couponInput, setCouponInput] = useState('');
+  const [couponError, setCouponError] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string, discount_type: string, discount_value: number } | null>(null);
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const SHIPPING_COST = 5000;
-  const finalTotal = shippingMethod === 'envio' ? subtotal + SHIPPING_COST : subtotal;
+
+  // Calculate discount
+  let discountAmount = 0;
+  if (appliedCoupon) {
+    if (appliedCoupon.discount_type === 'percentage') {
+      discountAmount = Math.round(subtotal * (appliedCoupon.discount_value / 100));
+    } else if (appliedCoupon.discount_type === 'fixed') {
+      discountAmount = appliedCoupon.discount_value;
+    }
+  }
+
+  const finalTotal = shippingMethod === 'envio' 
+    ? Math.max(0, subtotal - discountAmount) + SHIPPING_COST 
+    : Math.max(0, subtotal - discountAmount);
+
+  const handleApplyCoupon = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!couponInput.trim()) return;
+    setCouponError('');
+    try {
+      const res = await fetch(`/api/coupons?code=${encodeURIComponent(couponInput.trim())}`);
+      const result = await res.json();
+      if (res.ok) {
+        setAppliedCoupon(result);
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', message: `Cupón ${result.code} aplicado con éxito` }}));
+      } else {
+        setAppliedCoupon(null);
+        setCouponError(result.error || 'Cupón inválido');
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: result.error || 'Cupón inválido' }}));
+      }
+    } catch (err) {
+      setCouponError('Error al validar el cupón');
+    }
+  };
+
+  const handleRemoveCoupon = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setAppliedCoupon(null);
+    setCouponInput('');
+    setCouponError('');
+  };
 
   const handleCheckoutSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -55,7 +100,8 @@ export default function SlideCart({
           address: shippingMethod === 'envio' ? address : '',
           method: shippingMethod,
           items: cartItems,
-          total: finalTotal
+          total: finalTotal,
+          couponCode: appliedCoupon?.code || null
         })
       });
 
@@ -77,13 +123,16 @@ export default function SlideCart({
         )
         .join('\n');
       const shippingLine = shippingMethod === 'envio' ? `\n*Envío:* $${SHIPPING_COST.toLocaleString('es-AR')}` : '';
-      const totalFooter = `\n${shippingLine}\n*Total estimado: $${finalTotal.toLocaleString('es-AR')}*`;
+      const couponLine = appliedCoupon ? `\n*Cupón aplicado:* ${appliedCoupon.code} (-$${discountAmount.toLocaleString('es-AR')})` : '';
+      const totalFooter = `\n${shippingLine}${couponLine}\n*Total estimado: $${finalTotal.toLocaleString('es-AR')}*`;
       const note = '\n\nQuedo atento/a para coordinar pago, disponibilidad y entrega.';
       const fullMessage = encodeURIComponent(orderTitle + clientDetails + itemsHeader + itemsList + totalFooter + note);
 
       window.open(`https://wa.me/${SITE.whatsappNumber}?text=${fullMessage}`, '_blank', 'noopener,noreferrer');
 
       onClearCart();
+      setAppliedCoupon(null);
+      setCouponInput('');
       setIsCheckoutOpen(false);
       onClose();
     } catch (error) {
@@ -225,6 +274,48 @@ export default function SlideCart({
                       </motion.div>
                     )}
 
+                    {/* Sección de Cupón de Descuento */}
+                    <div className="pt-4 border-t border-brand-dark/5 space-y-2">
+                      <label className="block text-xs uppercase tracking-widest text-brand-dark/60 font-medium">
+                        ¿Tenés un cupón de descuento?
+                      </label>
+                      <div className="flex gap-2 items-end">
+                        <input
+                          type="text"
+                          value={couponInput}
+                          onChange={(e) => setCouponInput(e.target.value)}
+                          disabled={!!appliedCoupon}
+                          placeholder="Ej. LEDESIR10"
+                          className="flex-grow bg-transparent px-1 py-2 text-sm focus:outline-none border-b border-brand-dark/15 focus:border-brand-dark transition-colors placeholder-brand-dark/30 font-light uppercase"
+                        />
+                        {appliedCoupon ? (
+                          <button
+                            type="button"
+                            onClick={handleRemoveCoupon}
+                            className="bg-red-50 text-red-600 border border-red-200 px-3 py-1.5 text-xs uppercase tracking-wider font-semibold hover:bg-red-100 transition-colors"
+                          >
+                            Quitar
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={handleApplyCoupon}
+                            className="bg-brand-dark text-brand-white px-4 py-2 text-xs uppercase tracking-widest font-semibold hover:bg-brand-gold transition-colors"
+                          >
+                            Aplicar
+                          </button>
+                        )}
+                      </div>
+                      {couponError && (
+                        <p className="text-[11px] text-red-500 font-medium">{couponError}</p>
+                      )}
+                      {appliedCoupon && (
+                        <p className="text-[11px] text-green-600 font-semibold flex items-center gap-1.5">
+                          ✓ Cupón aplicado: {appliedCoupon.code} ({appliedCoupon.discount_type === 'percentage' ? `${appliedCoupon.discount_value}%` : `$${appliedCoupon.discount_value}`} de descuento)
+                        </p>
+                      )}
+                    </div>
+
                     <button
                       type="submit"
                       className="w-full bg-brand-dark text-brand-white py-4 uppercase tracking-widest text-xs font-semibold hover:bg-brand-gold transition-colors duration-300 shadow-xs"
@@ -349,6 +440,14 @@ export default function SlideCart({
                     <span className="text-brand-dark/50 uppercase tracking-wider">Envío</span>
                     <span className="font-medium text-brand-dark">
                       ${SHIPPING_COST.toLocaleString('es-AR')}
+                    </span>
+                  </div>
+                )}
+                {discountAmount > 0 && (
+                  <div className="flex justify-between items-center text-xs text-green-600 font-medium">
+                    <span className="uppercase tracking-wider">Descuento ({appliedCoupon?.code})</span>
+                    <span>
+                      -${discountAmount.toLocaleString('es-AR')}
                     </span>
                   </div>
                 )}

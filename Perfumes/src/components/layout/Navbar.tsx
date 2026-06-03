@@ -35,20 +35,22 @@ const cartPayload = (product: PerfumeProduct) => {
 function SearchOverlay({
   isOpen,
   onClose,
+  products = PRODUCTS,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  products?: PerfumeProduct[];
 }) {
   const [query, setQuery] = useState('');
 
   const results = useMemo(() => {
     const normalizedQuery = normalizeText(query.trim());
-    if (!normalizedQuery) return PRODUCTS.slice(0, 4);
+    if (!normalizedQuery) return products.slice(0, 4);
 
-    return PRODUCTS.filter((product) =>
+    return products.filter((product) =>
       normalizeText(productSearchText(product)).includes(normalizedQuery)
     ).slice(0, 6);
-  }, [query]);
+  }, [query, products]);
 
   useEffect(() => {
     if (!isOpen) setQuery('');
@@ -127,7 +129,7 @@ function SearchOverlay({
                           {product.name}
                         </a>
                         <span className="text-xs font-semibold text-brand-dark/65">
-                          ${product.price.toLocaleString('es-AR')}
+                          ${(product.sizes[0]?.price || 0).toLocaleString('es-AR')}
                         </span>
                       </div>
                       <p className="text-[10px] uppercase tracking-[0.18em] text-brand-gold font-semibold mt-1">
@@ -164,7 +166,7 @@ function SearchOverlay({
   );
 }
 
-export default function Navbar() {
+export default function Navbar({ products = PRODUCTS }: { products?: PerfumeProduct[] }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -337,7 +339,7 @@ export default function Navbar() {
         </AnimatePresence>
       </header>
 
-      <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} products={products} />
       <SlideCart
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}

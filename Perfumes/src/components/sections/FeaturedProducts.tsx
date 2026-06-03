@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import type { PerfumeProduct } from '../../data/products';
 
 export function ProductCard({ product }: { product: PerfumeProduct }) {
-  const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
+  const [selectedSize, setSelectedSize] = useState(product.sizes[product.sizes.length - 1] || product.sizes[0]);
 
   const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -26,8 +26,8 @@ export function ProductCard({ product }: { product: PerfumeProduct }) {
   };
 
   return (
-    <div className="group cursor-pointer flex flex-col">
-      <div className="relative aspect-[3/4] overflow-hidden bg-[#F3F0E9] rounded-xs">
+    <div className="group flex flex-col">
+      <a href={`/product/${product.id}`} className="relative aspect-[3/4] overflow-hidden bg-[#F3F0E9] rounded-xs block">
         <img
           src={product.image}
           alt={product.name}
@@ -38,13 +38,15 @@ export function ProductCard({ product }: { product: PerfumeProduct }) {
         <div className="absolute left-3 top-3 bg-brand-white/85 backdrop-blur-sm px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-brand-dark/70 font-semibold">
           {product.intensity}
         </div>
-      </div>
+      </a>
 
       <div className="flex flex-col mt-4">
         <div className="flex justify-between items-baseline gap-4">
-          <h3 className="font-serif text-lg text-brand-dark font-medium group-hover:text-brand-gold transition-colors duration-300">
-            {product.name}
-          </h3>
+          <a href={`/product/${product.id}`}>
+            <h3 className="font-serif text-lg text-brand-dark font-medium group-hover:text-brand-gold transition-colors duration-300">
+              {product.name}
+            </h3>
+          </a>
           <div className="flex flex-col items-end gap-1">
             <span className="text-sm font-semibold text-brand-dark/85">
               ${selectedSize.price.toLocaleString('es-AR')}

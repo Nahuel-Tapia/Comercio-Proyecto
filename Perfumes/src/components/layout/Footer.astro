@@ -64,8 +64,9 @@ const whatsappHref = whatsappLink('Hola, quiero asesoramiento para elegir una fr
         </a>
 
         <h4 class="font-serif text-lg text-brand-dark mb-4 font-medium lowercase">boletín</h4>
-        <form class="flex w-full max-w-sm border-b border-brand-dark/25 pb-1">
+        <form id="newsletter-form" class="flex w-full max-w-sm border-b border-brand-dark/25 pb-1">
           <input
+            id="newsletter-email"
             type="email"
             placeholder="Tu email..."
             class="bg-transparent px-2 py-1.5 flex-grow text-sm focus:outline-none placeholder-brand-dark/45 font-light"
@@ -77,6 +78,45 @@ const whatsappHref = whatsappLink('Hola, quiero asesoramiento para elegir una fr
         </form>
       </div>
     </div>
+
+    <script>
+      const form = document.getElementById('newsletter-form') as HTMLFormElement | null;
+      form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const emailInput = document.getElementById('newsletter-email') as HTMLInputElement | null;
+        const email = emailInput?.value || '';
+
+        try {
+          const res = await fetch('/api/newsletter', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email }),
+          });
+
+          const result = await res.json();
+          if (res.ok) {
+            window.dispatchEvent(
+              new CustomEvent('toast', {
+                detail: { type: 'success', message: result.message || 'Suscripción exitosa' },
+              })
+            );
+            if (emailInput) emailInput.value = '';
+          } else {
+            window.dispatchEvent(
+              new CustomEvent('toast', {
+                detail: { type: 'error', message: result.error || 'Error al suscribirse' },
+              })
+            );
+          }
+        } catch (err) {
+          window.dispatchEvent(
+            new CustomEvent('toast', {
+              detail: { type: 'error', message: 'Error de red al suscribirse' },
+            })
+          );
+        }
+      });
+    </script>
 
     <div class="border-t border-brand-dark/5 pt-8 flex flex-col md:flex-row justify-between items-center text-xs uppercase tracking-widest text-brand-dark/40 font-medium">
       <p>&copy; {new Date().getFullYear()} {SITE.brandFull}. Todos los derechos reservados.</p>

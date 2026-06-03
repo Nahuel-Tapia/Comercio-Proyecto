@@ -63,6 +63,70 @@ export const initDb = () => {
     );
   `);
 
+  // Migración para añadir soporte de cupones a la tabla de órdenes
+  try {
+    db.exec('ALTER TABLE orders ADD COLUMN coupon_code TEXT;');
+  } catch (e) {}
+  try {
+    db.exec('ALTER TABLE orders ADD COLUMN discount REAL DEFAULT 0;');
+  } catch (e) {}
+
+  // Tabla de newsletters
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS newsletter (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT UNIQUE NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
+  // Tabla de mensajes de contacto
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS messages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      phone TEXT,
+      reason TEXT,
+      message TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
+  // Tabla de cupones de descuento
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS coupons (
+      code TEXT PRIMARY KEY,
+      discount_type TEXT NOT NULL,
+      discount_value REAL NOT NULL,
+      is_active INTEGER DEFAULT 1,
+      max_uses INTEGER,
+      uses_count INTEGER DEFAULT 0,
+      expires_at DATETIME
+    );
+  `);
+
+  // Crear cupones por defecto
+  const testCoupon = db.prepare('SELECT code FROM coupons WHERE code = ?').get('LEDESIR10');
+  if (!testCoupon) {
+    db.prepare(`
+      INSERT INTO coupons (code, discount_type, discount_value, is_active)
+      VALUES ('LEDESIR10', 'percentage', 10)
+    `).run();
+    db.prepare(`
+      INSERT INTO coupons (code, discount_type, discount_value, is_active)
+      VALUES ('DESIR20', 'percentage', 20)
+    `).run();
+    db.prepare(`
+      INSERT INTO coupons (code, discount_type, discount_value, is_active)
+      VALUES ('PROMO1000', 'fixed', 1000)
+    `).run();
+  }
+
+  // Índices para optimizar consultas frecuentes
+  db.exec('CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);');
+  db.exec('CREATE INDEX IF NOT EXISTS idx_products_family ON products(family);');
+  db.exec('CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at);');
+
   // Poblar productos si la tabla está vacía
   const productCount = db.prepare('SELECT COUNT(*) as count FROM products').get() as { count: number };
   

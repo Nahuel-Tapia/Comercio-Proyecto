@@ -1,9 +1,18 @@
 import type { APIRoute } from 'astro';
 import db from '../../lib/db';
 import { verifyPassword, signSession } from '../../lib/auth';
+import { checkRateLimit } from '../../lib/rateLimit';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
+    const ip = request.headers.get('x-forwarded-for') || 'unknown';
+    if (!checkRateLimit(ip, 5, 60000)) {
+      return new Response(JSON.stringify({ error: 'Demasiados intentos. Intenta de nuevo en un minuto.' }), {
+        status: 429,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     const body = await request.json();
     const { email, password } = body;
 
@@ -22,6 +31,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       path: '/',
       httpOnly: true,
       secure: import.meta.env.PROD,
+      sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7, // 1 semana
     });
 

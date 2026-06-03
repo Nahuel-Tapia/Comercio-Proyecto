@@ -3,6 +3,34 @@ import db, { getProducts } from '../../lib/db';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { verifySession } from '../../lib/auth';
+import crypto from 'crypto';
+import { z } from 'zod';
+
+const ProductSchema = z.object({
+  id: z.string().optional().nullable().transform(val => val === '' ? undefined : val),
+  name: z.string().min(1, 'El nombre es requerido'),
+  category: z.enum(['Para Mujer', 'Para Hombre', 'Unisex']),
+  family: z.string().min(1, 'La familia olfativa es requerida'),
+  description: z.string().min(1, 'La descripción es requerida'),
+  concentration: z.string().min(1, 'La concentración es requerida'),
+  intensity: z.enum(['Suave', 'Media', 'Intensa']),
+  longevity: z.string().min(1, 'La duración es requerida'),
+  sillage: z.string().min(1, 'La estela es requerida'),
+  recommendation: z.string().min(1, 'La recomendación es requerida'),
+  sizes: z.array(z.object({
+    label: z.string(),
+    price: z.number().positive('El precio debe ser mayor a 0'),
+    stock: z.number().int().nonnegative('El stock no puede ser negativo')
+  })).min(1, 'Debe tener al menos una variante de tamaño'),
+  bestFor: z.array(z.string()).optional().default([]),
+  seasons: z.array(z.string()).optional().default([]),
+  tags: z.array(z.string()).optional().default([]),
+  notes: z.object({
+    top: z.array(z.string()).optional().default([]),
+    heart: z.array(z.string()).optional().default([]),
+    base: z.array(z.string()).optional().default([])
+  }).optional().default({ top: [], heart: [], base: [] })
+});
 
 export const GET: APIRoute = async ({ cookies }) => {
   const sessionCookie = cookies.get('admin_session');
@@ -39,9 +67,24 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       }
 
       if (file && file.size > 0) {
+        if (file.size > 5 * 1024 * 1024) {
+          return new Response(JSON.stringify({ error: 'La imagen supera el tamaño máximo de 5MB' }), { status: 400 });
+        }
+
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/gif'];
+        if (!allowedTypes.includes(file.type)) {
+          return new Response(JSON.stringify({ error: 'Tipo de archivo no permitido. Solo se permiten JPG, PNG, WEBP, AVIF y GIF.' }), { status: 400 });
+        }
+
+        let extension = '.jpg';
+        if (file.type === 'image/png') extension = '.png';
+        else if (file.type === 'image/webp') extension = '.webp';
+        else if (file.type === 'image/avif') extension = '.avif';
+        else if (file.type === 'image/gif') extension = '.gif';
+
+        const fileName = `${crypto.randomUUID()}${extension}`;
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
-        const fileName = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`;
         const uploadDir = path.join(process.cwd(), 'public', 'uploads');
         await fs.mkdir(uploadDir, { recursive: true });
         const filePath = path.join(uploadDir, fileName);
@@ -64,6 +107,12 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       data = await request.json();
       imageUrl = data.image || '';
     }
+
+    const validationResult = ProductSchema.safeParse(data);
+    if (!validationResult.success) {
+      return new Response(JSON.stringify({ error: validationResult.error.errors.map(e => e.message).join(', ') }), { status: 400 });
+    }
+    const validatedData = validationResult.data;
     
     const insertOrReplace = db.prepare(`
       INSERT OR REPLACE INTO products (
@@ -78,22 +127,22 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     `);
 
     insertOrReplace.run({
-      id: data.id || Math.random().toString(36).substr(2, 9),
-      name: data.name || '',
-      category: data.category || 'Unisex',
+      id: validatedData.id || Math.random().toString(36).substr(2, 9),
+      name: validatedData.name,
+      category: validatedData.category,
       image: imageUrl,
-      description: data.description || '',
-      family: data.family || '',
-      concentration: data.concentration || '',
-      intensity: data.intensity || 'Media',
-      longevity: data.longevity || '',
-      sillage: data.sillage || '',
-      recommendation: data.recommendation || '',
-      sizes_json: JSON.stringify(data.sizes || []),
-      bestFor_json: JSON.stringify(data.bestFor || []),
-      seasons_json: JSON.stringify(data.seasons || []),
-      tags_json: JSON.stringify(data.tags || []),
-      notes_json: JSON.stringify(data.notes || { top: [], heart: [], base: [] }),
+      description: validatedData.description,
+      family: validatedData.family,
+      concentration: validatedData.concentration,
+      intensity: validatedData.intensity,
+      longevity: validatedData.longevity,
+      sillage: validatedData.sillage,
+      recommendation: validatedData.recommendation,
+      sizes_json: JSON.stringify(validatedData.sizes),
+      bestFor_json: JSON.stringify(validatedData.bestFor),
+      seasons_json: JSON.stringify(validatedData.seasons),
+      tags_json: JSON.stringify(validatedData.tags),
+      notes_json: JSON.stringify(validatedData.notes),
     });
     
     return new Response(JSON.stringify({ success: true, message: 'Producto guardado' }), {

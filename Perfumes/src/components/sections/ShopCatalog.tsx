@@ -164,10 +164,10 @@ function QuizPanel({
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {recommendedProducts.map((product) => (
-              <button
+              <a
                 key={product.id}
-                onClick={() => onOpenProduct(product)}
-                className="text-left bg-brand-white/55 hover:bg-brand-white border border-brand-dark/5 p-4 transition-colors"
+                href={`/product/${product.id}`}
+                className="text-left bg-brand-white/55 hover:bg-brand-white border border-brand-dark/5 p-4 transition-colors block"
               >
                 <span className="text-[10px] uppercase tracking-[0.2em] text-brand-gold font-semibold">
                   {product.family}
@@ -181,7 +181,7 @@ function QuizPanel({
                 <p className="text-xs text-brand-dark/55 leading-relaxed font-light mt-2">
                   {product.recommendation}
                 </p>
-              </button>
+              </a>
             ))}
           </div>
         </div>
@@ -197,7 +197,7 @@ function ProductModal({
   product: PerfumeProduct;
   onClose: () => void;
 }) {
-  const [selectedSize, setSelectedSize] = useState(product.sizes[2] || product.sizes[0]);
+  const [selectedSize, setSelectedSize] = useState(product.sizes[product.sizes.length - 1] || product.sizes[0]);
 
   const details: Array<[string, string]> = [
     ['Concentración', product.concentration],
@@ -628,8 +628,8 @@ export default function ShopCatalog({ products }: { products: PerfumeProduct[] }
                   transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
                   className="group flex flex-col bg-transparent"
                 >
-                  <button
-                    onClick={() => setSelectedProduct(product)}
+                  <a
+                    href={`/product/${product.id}`}
                     className="text-left flex flex-col flex-grow"
                   >
                     <div className="relative aspect-[3/4] overflow-hidden bg-[#F3F0E9] rounded-xs mb-4">
@@ -682,13 +682,14 @@ export default function ShopCatalog({ products }: { products: PerfumeProduct[] }
                         </p>
                       </div>
                     </div>
-                  </button>
+                  </a>
 
                   <div className="mt-4 flex items-center justify-between gap-4">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        addToCart(product, product.sizes[2].label, product.sizes[2].price);
+                        const defSize = product.sizes[product.sizes.length - 1] || product.sizes[0];
+                        addToCart(product, defSize.label, defSize.price);
                       }}
                       className="text-xs uppercase tracking-widest font-semibold text-brand-dark/75 hover:text-brand-dark border-b border-brand-dark/10 hover:border-brand-dark pb-0.5 transition-all duration-300"
                     >

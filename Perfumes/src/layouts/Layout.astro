@@ -5,6 +5,8 @@ import Footer from '../components/layout/Footer.astro';
 import ToastContainer from '../components/layout/ToastContainer';
 import WhatsAppButton from '../components/layout/WhatsAppButton';
 
+import { getProducts } from '../lib/db';
+
 interface Props {
   title?: string;
   description?: string;
@@ -14,6 +16,8 @@ const {
   title = "Lé Désir Fragancias", 
   description = "Descubre tu esencia con nuestra colección exclusiva de perfumes. Diseñados para perdurar y dejar una huella inolvidable." 
 } = Astro.props;
+
+const products = getProducts();
 ---
 
 <!doctype html>
@@ -37,7 +41,7 @@ const {
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   </head>
   <body class="min-h-screen flex flex-col">
-    <Navbar client:load />
+    <Navbar products={products} client:load />
     
     <main class="flex-grow">
       <slot />
