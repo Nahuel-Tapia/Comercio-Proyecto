@@ -33,6 +33,7 @@ export default function SlideCart({
 }: SlideCartProps) {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [shippingMethod, setShippingMethod] = useState<'envio' | 'takeaway'>('takeaway');
@@ -89,7 +90,7 @@ export default function SlideCart({
 
   const handleCheckoutSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!name.trim()) return;
+    if (!name.trim() || !email.trim()) return;
 
     try {
       const res = await fetch('/api/orders', {
@@ -97,6 +98,7 @@ export default function SlideCart({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           client_name: name,
+          client_email: email,
           phone,
           address: shippingMethod === 'envio' ? address : '',
           method: shippingMethod,
@@ -220,6 +222,20 @@ export default function SlideCart({
                         value={name}
                         onChange={(event) => setName(event.target.value)}
                         placeholder="Ej. María González"
+                        className="w-full bg-transparent px-1 py-2 text-sm focus:outline-none border-b border-brand-dark/15 focus:border-brand-dark transition-colors placeholder-brand-dark/30 font-light"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs uppercase tracking-widest text-brand-dark/60 mb-1.5 font-medium">
+                        Correo electrónico *
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(event) => setEmail(event.target.value)}
+                        placeholder="Ej. maria@correo.com"
                         className="w-full bg-transparent px-1 py-2 text-sm focus:outline-none border-b border-brand-dark/15 focus:border-brand-dark transition-colors placeholder-brand-dark/30 font-light"
                       />
                     </div>

@@ -48,10 +48,12 @@ export const POST: APIRoute = async ({ request }) => {
           if (orderId) {
             let orderStatus = 'Pendiente';
             let paymentStatus = 'Pendiente';
+            let shouldSendApprovedEmail = false;
             
             if (status === 'approved') {
               orderStatus = 'Completado';
               paymentStatus = 'Aprobado';
+              shouldSendApprovedEmail = true;
             } else if (status === 'rejected') {
               paymentStatus = 'Rechazado';
             } else if (status === 'in_process' || status === 'pending') {
@@ -66,6 +68,39 @@ export const POST: APIRoute = async ({ request }) => {
             `).run(orderStatus, paymentStatus, paymentId, orderId);
             
             console.log(`Webhook MP: Pedido #${orderId} actualizado con éxito a estado ${paymentStatus}.`);
+
+            if (shouldSendApprovedEmail) {
+              try {
+                const orderData = db.prepare('SELECT * FROM orders WHERE id = ?').get(orderId) as any;
+                if (orderData) {
+                  const items = JSON.parse(orderData.items_json);
+                  
+                  const getProductDetails = db.prepare('SELECT name FROM products WHERE id = ?');
+                  const hydratedItems = items.map((item: any) => {
+                    const prod = getProductDetails.get(item.productId) as any;
+                    const prodAll = db.prepare('SELECT sizes_json FROM products WHERE id = ?').get(item.productId) as any;
+                    let price = 0;
+                    if (prodAll) {
+                      const sizes = JSON.parse(prodAll.sizes_json);
+                      const s = sizes.find((sz: any) => sz.label === item.sizeLabel);
+                      if (s) price = s.price;
+                    }
+                    return {
+                      ...item,
+                      name: prod ? prod.name : 'Fragancia',
+                      price: price
+                    };
+                  });
+                  
+                  const { sendOrderApprovedEmail } = await import('../../../lib/email');
+                  sendOrderApprovedEmail(orderData, hydratedItems).catch(err => {
+                    console.error('Error enviando email de pago aprobado:', err);
+                  });
+                }
+              } catch (emailErr) {
+                console.error('Error al iniciar el envío de email de pago aprobado:', emailErr);
+              }
+            }
           }
         } else {
           console.error(`Error al consultar pago ${paymentId} en Mercado Pago:`, await paymentResponse.text());

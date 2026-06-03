@@ -3,9 +3,11 @@ import db from '../../lib/db';
 import { verifySession } from '../../lib/auth';
 import { checkRateLimit } from '../../lib/rateLimit';
 import { z } from 'zod';
+import { sendOrderEmails } from '../../lib/email';
 
 const OrderSchema = z.object({
   client_name: z.string().min(1, 'El nombre del cliente es requerido'),
+  client_email: z.string().email('El correo electrónico no es válido'),
   phone: z.string().optional().default(''),
   address: z.string().optional().default(''),
   method: z.string().default('retiro'),
@@ -168,8 +170,8 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const insertOrder = db.prepare(`
-      INSERT INTO orders (id, client_name, phone, address, method, items_json, total, coupon_code, discount, payment_method, payment_status, preference_id)
-      VALUES (@id, @client_name, @phone, @address, @method, @items_json, @total, @coupon_code, @discount, @payment_method, @payment_status, @preference_id)
+      INSERT INTO orders (id, client_name, client_email, phone, address, method, items_json, total, coupon_code, discount, payment_method, payment_status, preference_id)
+      VALUES (@id, @client_name, @client_email, @phone, @address, @method, @items_json, @total, @coupon_code, @discount, @payment_method, @payment_status, @preference_id)
     `);
 
     // Usar transacción para insertar orden, restar stock e incrementar usos del cupón
@@ -203,23 +205,49 @@ export const POST: APIRoute = async ({ request }) => {
       }
     });
 
-    processOrder(
-      {
-        id: orderId,
-        client_name: validatedData.client_name || 'Desconocido',
-        phone: validatedData.phone || '',
-        address: validatedData.address || '',
-        method: validatedData.method || 'retiro',
-        items_json: JSON.stringify(validatedData.items || []),
-        total: serverTotal,
-        coupon_code: couponCode,
-        discount: discount,
-        payment_method: validatedData.payment_method,
-        payment_status: validatedData.payment_method === 'mercadopago' ? 'Pendiente' : 'Aprobado',
-        preference_id: preferenceId,
-      },
-      validatedData.items
-    );
+    const orderData = {
+      id: orderId,
+      client_name: validatedData.client_name || 'Desconocido',
+      client_email: validatedData.client_email,
+      phone: validatedData.phone || '',
+      address: validatedData.address || '',
+      method: validatedData.method || 'retiro',
+      items_json: JSON.stringify(validatedData.items || []),
+      total: serverTotal,
+      coupon_code: couponCode,
+      discount: discount,
+      payment_method: validatedData.payment_method,
+      payment_status: validatedData.payment_method === 'mercadopago' ? 'Pendiente' : 'Aprobado',
+      preference_id: preferenceId,
+    };
+
+    processOrder(orderData, validatedData.items);
+
+    // Enviar correos de confirmación/alerta de orden en segundo plano
+    try {
+      const getProductDetails = db.prepare('SELECT name FROM products WHERE id = ?');
+      const hydratedItems = validatedData.items.map(item => {
+        const prod = getProductDetails.get(item.productId) as any;
+        const prodAll = db.prepare('SELECT sizes_json FROM products WHERE id = ?').get(item.productId) as any;
+        let price = 0;
+        if (prodAll) {
+          const sizes = JSON.parse(prodAll.sizes_json);
+          const s = sizes.find((sz: any) => sz.label === item.sizeLabel);
+          if (s) price = s.price;
+        }
+        return {
+          ...item,
+          name: prod ? prod.name : 'Fragancia',
+          price: price
+        };
+      });
+
+      sendOrderEmails(orderData, hydratedItems).catch(err => {
+        console.error('Error enviando correos electrónicos:', err);
+      });
+    } catch (emailErr) {
+      console.error('Error al iniciar el flujo de email:', emailErr);
+    }
     
     return new Response(JSON.stringify({ success: true, orderId, preferenceUrl }), {
       status: 200,

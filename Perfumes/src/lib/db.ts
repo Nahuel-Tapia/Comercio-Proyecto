@@ -82,6 +82,9 @@ export const initDb = () => {
   try {
     db.exec("ALTER TABLE orders ADD COLUMN preference_id TEXT;");
   } catch (e) {}
+  try {
+    db.exec("ALTER TABLE orders ADD COLUMN client_email TEXT;");
+  } catch (e) {}
 
   // Tabla de newsletters
   db.exec(`
